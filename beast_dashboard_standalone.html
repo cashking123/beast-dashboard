@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beast 数据看板</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #0b0e1a; color: #e2e8f0; font-size: 13px;
+  }
+  .topbar {
+    background: linear-gradient(90deg, #1e3a5f 0%, #0f1221 100%);
+    padding: 10px 24px; border-bottom: 1px solid #1e293b;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+  }
+  .topbar .brand { font-size:18px; font-weight:700; }
+  .topbar .brand span { color:#60a5fa; font-size:12px; font-weight:400; margin-left:10px; }
+  .topbar .nav { display:flex; gap:6px; }
+  .nav-btn {
+    padding:6px 16px; border-radius:6px; border:1px solid #334155;
+    background:#1e293b; color:#94a3b8; font-size:13px; font-weight:600;
+    cursor:pointer; transition:all .2s;
+  }
+  .nav-btn:hover { background:#2563eb20; border-color:#2563eb; }
+  .nav-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .status-line {
+    padding:6px 24px; font-size:11px; color:#64748b;
+    background:#0f1221; border-bottom:1px solid #1e293b;
+  }
+  .main { padding: 16px 24px; max-width:1400px; margin:0 auto; }
+  .section { display:none; }
+  .section.active { display:block; }
+
+  /* 卡片 */
+  .card-grid {
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:12px; margin-bottom:16px;
+  }
+  .card {
+    background: #1e293b; border-radius:10px; padding:16px;
+    border:1px solid #334155; position:relative;
+  }
+  .card .label { font-size:12px; color:#94a3b8; margin-bottom:6px; }
+  .card .value { font-size:24px; font-weight:700; color:#f1f5f9; }
+  .card .sub {
+    font-size:11px; color:#64748b; margin-top:4px;
+    display:flex; gap:12px; flex-wrap: wrap;
+  }
+  .card .sub span { display:flex; align-items:center; gap:4px; }
+  .card .delta { font-size:12px; font-weight:600; margin-top:4px; }
+  .delta.up { color:#34d399; }
+  .delta.down { color:#f87171; }
+  .delta.neutral { color:#94a3b8; }
+  .badge {
+    position:absolute; top:10px; right:10px; font-size:10px; padding:3px 8px;
+    border-radius:20px; font-weight:700;
+  }
+  .badge.alert { background:#7f1d1d; color:#fca5a5; }
+  .badge.ok { background:#064e3b; color:#6ee7b7; }
+  .badge.warn { background:#78350f; color:#fcd34d; }
+
+  .summary-box {
+    background: #172033; border-radius:8px; padding:12px; font-size:13px; line-height:1.7;
+    color:#cbd5e1; border-left:3px solid #2563eb;
+  }
+
+  /* 面板 */
+  .panel-grid {
+    display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; margin-bottom:16px;
+  }
+  .panel {
+    background:#1e293b; border-radius:10px; padding:16px;
+    border:1px solid #334155;
+  }
+  .panel.wide { grid-column: span 2; }
+  .panel-title {
+    font-size:14px; font-weight:700; margin-bottom:12px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .panel-title::before {
+    content:''; display:inline-block; width:3px; height:16px;
+    background:#2563eb; border-radius:2px;
+  }
+  .chart-container { width:100%; height:260px; }
+
+  /* 表格 */
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th, td { padding:8px 10px; text-align:right; border-bottom:1px solid #334155; }
+  th { color:#94a3b8; font-weight:600; background:#1e293b; }
+  td:first-child, th:first-child { text-align:left; }
+  tr:hover td { background:#172033; }
+  .trend-up { color:#34d399; font-weight:600; }
+  .trend-down { color:#f87171; font-weight:600; }
+  .tag {
+    display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600;
+  }
+  .tag.green { background:#064e3b; color:#34d399; }
+  .tag.red { background:#7f1d1d; color:#f87171; }
+  .tag.yellow { background:#78350f; color:#fcd34d; }
+  .tag.gray { background:#334155; color:#cbd5e1; }
+  .tag.blue { background:#1e3a5f; color:#60a5fa; }
+
+  .empty-state { text-align:center; padding:24px; color:#64748b; font-size:13px; }
+
+  /* 差值分解条 */
+  .diff-bar {
+    display:flex; height:18px; border-radius:4px; overflow:hidden; margin-top:4px;
+    background:#334155; font-size:10px; align-items:center;
+  }
+  .diff-bar .seg {
+    display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600;
+    white-space:nowrap; padding:0 4px;
+  }
+  .diff-bar .seg.r { background:#7f1d1d; }
+  .diff-bar .seg.v { background:#475569; }
+
+  /* 上传区 */
+  .upload-area {
+    border:2px dashed #475569; border-radius:12px; padding:16px; text-align:center;
+    color:#94a3b8; margin-bottom:16px; cursor:pointer; transition:all .2s;
+    max-width:600px;
+  }
+  .upload-area:hover { border-color:#2563eb; color:#cbd5e1; }
+  .upload-area input { display:none; }
+
+  /* 响应式 */
+  @media (max-width: 1100px) {
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+    .panel-grid { grid-template-columns: 1fr; }
+    .panel.wide { grid-column: span 1; }
+  }
+  @media (max-width: 640px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .main { padding: 12px; }
+    .topbar { padding: 10px 12px; flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">🎮 Beast 数据看板 <span id="pageSubTitle">加载中...</span></div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="switchTab('daily')">📊 日报诊断</button>
+    <button class="nav-btn" onclick="switchTab('weekly')">📈 周报对比</button>
+    <button class="nav-btn" onclick="switchTab('history')">📜 历史数据</button>
+  </div>
+</div>
+
+<div class="status-line" id="statusBar"></div>
+
+<div class="main">
+
+<!-- 上传 fallback -->
+<div style="display:flex; justify-content:center;" id="uploadWrap">
+  <label class="upload-area" id="uploadArea">
+    <input type="file" id="jsonFile" accept=".json,.js" onchange="handleFile(event)">
+    <div>📁 未找到数据文件，点击上传 daily_data.js / weekly_data.js</div>
+  </label>
+</div>
+
+<!-- ========== 日报 ========== -->
+<div class="section active" id="daily">
+  <div class="card-grid">
+    <div class="card">
+      <div class="label">营收 (昨日)</div>
+      <div class="value" id="d_rev">-</div>
+      <div class="sub">
+        <span>前日: <b id="d_rev_before">-</b></span>
+        <span>7日均: <b id="d_rev_avg7">-</b></span>
+        <span>30日均: <b id="d_rev_avg30">-</b></span>
+      </div>
+      <div class="delta" id="d_rev_delta">--</div>
+      <span class="badge ok" id="d_rev_badge">正常</span>
+    </div>
+    <div class="card">
+      <div class="label">注册 (昨日)</div>
+      <div class="value" id="d_reg">-</div>
+      <div class="sub">
+        <span>前日: <b id="d_reg_before">-</b></span>
+        <span>7日均: <b id="d_reg_avg7">-</b></span>
+        <span>30日均: <b id="d_reg_avg30">-</b></span>
+      </div>
+      <div class="delta" id="d_reg_delta">--</div>
+    </div>
+    <div class="card">
+      <div class="label">新增付费人数</div>
+      <div class="value" id="d_newpay">-</div>
+      <div class="sub">
+        <span>前日: <b id="d_newpay_before">-</b></span>
+        <span>7日均: <b id="d_newpay_avg7">-</b></span>
+        <span>30日均: <b id="d_newpay_avg30">-</b></span>
+      </div>
+      <div class="delta" id="d_newpay_delta">--</div>
+    </div>
+    <div class="card">
+      <div class="label">新增付费率</div>
+      <div class="value" id="d_newrate">-</div>
+      <div class="sub">
+        <span>前日: <b id="d_newrate_before">-</b></span>
+        <span>7日均: <b id="d_newrate_avg7">-</b></span>
+        <span>30日均: <b id="d_newrate_avg30">-</b></span>
+      </div>
+      <div class="delta" id="d_newrate_delta">--</div>
+    </div>
+    <div class="card" style="grid-column:span 4;">
+      <div class="label">诊断摘要</div>
+      <div class="summary-box" id="d_summary">等待数据...</div>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel">
+      <div class="panel-title">🏆 渠道营收 TOP5</div>
+      <div class="chart-container" id="chart_channel_rev"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📊 注册 TOP5 渠道</div>
+      <div class="chart-container" id="chart_channel_reg"></div>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel">
+      <div class="panel-title">📉 营收异常渠道 （昨日收入<$100已过滤）</div>
+      <div class="table-wrap">
+        <table id="table_anomaly">
+          <thead><tr><th>渠道</th><th>昨日营收</th><th>前日营收</th><th>环比</th><th>异常分解</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📊 注册异常渠道 （昨日注册<5已过滤）</div>
+      <div class="table-wrap">
+        <table id="table_reg_anomaly">
+          <thead><tr><th>渠道</th><th>昨日注册</th><th>前日注册</th><th>环比</th><th>原因</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel wide">
+    <div class="panel-title">🔍 流失预警（历史付费>$500，最后登录3-7天）</div>
+    <div class="table-wrap">
+      <table id="table_churn_alert">
+        <thead><tr><th>玩家名称</th><th>UCID</th><th>渠道</th><th>区服</th><th>历史付费</th><th>最后登录</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel wide">
+    <div class="panel-title">🗺️ 区服营收排行（S11 → S25）</div>
+    <div class="table-wrap">
+      <table id="table_server">
+        <thead><tr><th>区服</th><th>昨日营收</th><th>前日营收</th><th>环比</th><th>开服天数</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 周报 ========== -->
+<div class="section" id="weekly">
+  <div class="card-grid">
+    <div class="card">
+      <div class="label">本周营收</div>
+      <div class="value" id="w_rev_cur">-</div>
+      <div class="sub">
+        <span class="sub-item">上周 <span id="w_rev_prev">-</span></span>
+        <span class="sub-item">环比 <span id="w_rev_delta2">-</span></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label">本周注册</div>
+      <div class="value" id="w_reg_cur">-</div>
+      <div class="sub">
+        <span class="sub-item">上周 <span id="w_reg_prev">-</span></span>
+        <span class="sub-item">环比 <span id="w_reg_delta2">-</span></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label">新增渠道数</div>
+      <div class="value" id="w_newch">-</div>
+      <div class="delta neutral">本周新增</div>
+    </div>
+    <div class="card">
+      <div class="label">异常渠道数</div>
+      <div class="value" id="w_anomaly">-</div>
+      <div class="delta down" id="w_anomaly_txt">需关注</div>
+    </div>
+  </div>
+
+  <div class="panel wide">
+    <div class="panel-title">📊 双周核心指标对比</div>
+    <div class="chart-container" id="chart_weekly_cmp"></div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel">
+      <div class="panel-title">🔻 异常渠道列表 （周付费<$100已过滤）</div>
+      <div class="table-wrap">
+        <table id="table_w_anomaly">
+          <thead><tr><th>渠道</th><th>本周</th><th>上周</th><th>环比</th><th>异常分解</th><th>状态</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">🗺️ 区服生命周期</div>
+      <div class="table-wrap">
+        <table id="table_w_server">
+          <thead><tr><th>区服</th><th>开服天数</th><th>历史注册</th><th>本周DAU</th><th>上周DAU</th><th>本周付费</th><th>上周付费</th><th>本周付费人数</th><th>上周付费人数</th><th>生命周期</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel wide">
+    <div class="panel-title">💸 付费流失概况（历史付费>$500，最后登录3-7天）</div>
+    <div class="table-wrap">
+      <table id="table_w_churn">
+        <thead><tr><th>玩家名称</th><th>UCID</th><th>渠道</th><th>区服</th><th>历史付费</th><th>最后登录</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 历史数据 ========== -->
+<div class="section" id="history">
+  <div class="panel wide">
+    <div class="panel-title">🗺️ 区服数据（按区服ID升序）</div>
+    <div class="table-wrap">
+      <table id="table_h_server">
+        <thead>
+          <tr>
+            <th>区服</th><th>开服天数</th><th>注册用户</th><th>累计营收</th>
+            <th>累计付费玩家</th><th>7日营收均值</th><th>7日活跃</th><th>7日付费玩家</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel wide">
+    <div class="panel-title">📊 渠道数据（按累计注册降序）</div>
+    <div class="table-wrap">
+      <table id="table_h_channel">
+        <thead>
+          <tr>
+            <th>渠道</th><th>入驻天数</th><th>累计注册</th><th>累计营收</th>
+            <th>LTV</th><th>状态</th><th>剩余玩家</th><th>剩余付费玩家</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<script>
+/* ===== 内嵌数据 ===== */
+const DAILY_DATA = {
+  "daily": {
+    "date": "2026-06-09",
+    "revenue": {
+      "yesterday": 5698.96,
+      "day_before": 5282.7,
+      "delta": 0.0788,
+      "avg7": 4923.13,
+      "avg30": 5202.82
+    },
+    "register": {
+      "yesterday": 379,
+      "day_before": 374,
+      "delta": 0.0134,
+      "avg7": 312,
+      "avg30": 271
+    },
+    "new_payers": {
+      "yesterday": 50,
+      "day_before": 47,
+      "delta": 0.0638,
+      "avg7": 56,
+      "avg30": 49
+    },
+    "new_pay_rate": {
+      "yesterday": 0.1319,
+      "day_before": 0.1257,
+      "delta": 0.0063,
+      "avg7": 0.2098,
+      "avg30": 0.2107
+    },
+    "summary": "营收正常(+7.9%)；注册正常(+1.3%)；新增付费正常(+6.4%)",
+    "channel_rev": [
+      {
+        "name": "梵克雅宝",
+        "val": 1510.12
+      },
+      {
+        "name": "在水一方_JUR",
+        "val": 742.18
+      },
+      {
+        "name": "厄洛斯",
+        "val": 732.75
+      },
+      {
+        "name": "新郑乐牛发财_JUR",
+        "val": 463.64
+      },
+      {
+        "name": "李航",
+        "val": 321.63
+      }
+    ],
+    "channel_reg_top5": [
+      {
+        "name": "梵克雅宝",
+        "val": 52
+      },
+      {
+        "name": "郑州未界发财_JUR",
+        "val": 38
+      },
+      {
+        "name": "聚冠_JUR",
+        "val": 34
+      },
+      {
+        "name": "laoxia_JUR",
+        "val": 34
+      },
+      {
+        "name": "李航",
+        "val": 26
+      }
+    ],
+    "anomaly_channels": [
+      {
+        "name": "雅典娜",
+        "yest": 158.73,
+        "before": 583.33,
+        "delta": -0.7279,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 409.62,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "cmdr.23005794: $480→$70(-$410)",
+          "churn_names": "无"
+        }
+      },
+      {
+        "name": "李航",
+        "yest": 321.63,
+        "before": 929.5,
+        "delta": -0.654,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 505.76,
+          "big_r_churn": 0,
+          "reg_drop": 105.95,
+          "quality_drop": 22.7,
+          "big_r_names": "cmdr.24003293: $350→$80(-$270), Danno: $192→$5(-$187), cmdr.18010175: $57→$8(-$49)",
+          "churn_names": "无"
+        }
+      },
+      {
+        "name": "郑州未界发财_JUR",
+        "yest": 250.57,
+        "before": 312.42,
+        "delta": -0.198,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 110.81,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "SirRat: $204→$121(-$83), chriisss89: $30→$2(-$28)",
+          "churn_names": "ClIx"
+        }
+      }
+    ],
+    "reg_anomaly_channels": [
+      {
+        "name": "殿堂网络_JUR",
+        "yest": 15,
+        "before": 34,
+        "delta": -0.5588,
+        "reason": "量跌"
+      },
+      {
+        "name": "厄洛斯",
+        "yest": 8,
+        "before": 14,
+        "delta": -0.4286,
+        "reason": "量跌"
+      },
+      {
+        "name": "李航",
+        "yest": 26,
+        "before": 34,
+        "delta": -0.2353,
+        "reason": "量跌"
+      },
+      {
+        "name": "在水一方_JUR",
+        "yest": 9,
+        "before": 11,
+        "delta": -0.1818,
+        "reason": "量跌"
+      },
+      {
+        "name": "卡地亚巨兽",
+        "yest": 9,
+        "before": 11,
+        "delta": -0.1818,
+        "reason": "量跌"
+      }
+    ],
+    "churn_alert": [
+      {
+        "name": "IA",
+        "ucid": "16020022004426",
+        "channel": "殿堂网络_JUR",
+        "server": "S22",
+        "total_pay": 587.89,
+        "last_login_days": 3
+      },
+      {
+        "name": "cmdr.20007067",
+        "ucid": "16020020007067",
+        "channel": "厄洛斯",
+        "server": "S20",
+        "total_pay": 715.56,
+        "last_login_days": 3
+      },
+      {
+        "name": "CharWizard",
+        "ucid": "16020020006095",
+        "channel": "殿堂网络_JUR",
+        "server": "S20",
+        "total_pay": 626.64,
+        "last_login_days": 6
+      },
+      {
+        "name": "CeeJay",
+        "ucid": "16020019003309",
+        "channel": "天津简游发财_JUR",
+        "server": "S19",
+        "total_pay": 1962.34,
+        "last_login_days": 3
+      },
+      {
+        "name": "RAGNAR",
+        "ucid": "16020018003925",
+        "channel": "发财_JUR",
+        "server": "S18",
+        "total_pay": 644.92,
+        "last_login_days": 6
+      },
+      {
+        "name": "cmdr.18003587",
+        "ucid": "16020018003587",
+        "channel": "在水一方_JUR",
+        "server": "S18",
+        "total_pay": 2709.17,
+        "last_login_days": 3
+      },
+      {
+        "name": "ClIx",
+        "ucid": "16020017003303",
+        "channel": "郑州未界发财_JUR",
+        "server": "S17",
+        "total_pay": 3705.54,
+        "last_login_days": 5
+      },
+      {
+        "name": "Nova",
+        "ucid": "16020017003071",
+        "channel": "广州昊天游_JUR",
+        "server": "S17",
+        "total_pay": 620.35,
+        "last_login_days": 3
+      },
+      {
+        "name": "cmdr.16005137",
+        "ucid": "16020016005137",
+        "channel": "广州昊天游_JUR",
+        "server": "S16",
+        "total_pay": 545.84,
+        "last_login_days": 6
+      },
+      {
+        "name": "cmdr.15004522",
+        "ucid": "16020015004522",
+        "channel": "长沙哈迪斯_JUR",
+        "server": "S15",
+        "total_pay": 3343.36,
+        "last_login_days": 3
+      }
+    ],
+    "server_rev": [
+      {
+        "name": "S11",
+        "yest": 26.97,
+        "before": 34.94,
+        "delta": -0.2281,
+        "days": 174
+      },
+      {
+        "name": "S12",
+        "yest": 0.99,
+        "before": 0.0,
+        "delta": 0.0,
+        "days": 154
+      },
+      {
+        "name": "S13",
+        "yest": 56.9,
+        "before": 127.38,
+        "delta": -0.5533,
+        "days": 140
+      },
+      {
+        "name": "S14",
+        "yest": 522.91,
+        "before": 128.95,
+        "delta": 3.0551,
+        "days": 106
+      },
+      {
+        "name": "S15",
+        "yest": 231.36,
+        "before": 325.06,
+        "delta": -0.2883,
+        "days": 78
+      },
+      {
+        "name": "S16",
+        "yest": 35.91,
+        "before": 5.98,
+        "delta": 5.005,
+        "days": 64
+      },
+      {
+        "name": "S17",
+        "yest": 171.66,
+        "before": 269.91,
+        "delta": -0.364,
+        "days": 57
+      },
+      {
+        "name": "S18",
+        "yest": 65.26,
+        "before": 230.23,
+        "delta": -0.7165,
+        "days": 50
+      },
+      {
+        "name": "S19",
+        "yest": 44.93,
+        "before": 113.86,
+        "delta": -0.6054,
+        "days": 43
+      },
+      {
+        "name": "S20",
+        "yest": 288.79,
+        "before": 282.78,
+        "delta": 0.0213,
+        "days": 36
+      },
+      {
+        "name": "S21",
+        "yest": 702.57,
+        "before": 376.66,
+        "delta": 0.8653,
+        "days": 29
+      },
+      {
+        "name": "S22",
+        "yest": 371.98,
+        "before": 449.43,
+        "delta": -0.1723,
+        "days": 22
+      },
+      {
+        "name": "S23",
+        "yest": 432.51,
+        "before": 1091.05,
+        "delta": -0.6036,
+        "days": 15
+      },
+      {
+        "name": "S24",
+        "yest": 2575.73,
+        "before": 1836.51,
+        "delta": 0.4025,
+        "days": 8
+      },
+      {
+        "name": "S25",
+        "yest": 170.49,
+        "before": 0.0,
+        "delta": 0.0,
+        "days": 1
+      }
+    ]
+  }
+};
+const WEEKLY_DATA = {
+  "weekly": {
+    "weeks": [
+      "05/23~05/29",
+      "05/30~06/05"
+    ],
+    "revenue": {
+      "cur": 38013.01,
+      "prev": 35705.99,
+      "delta": 0.0646
+    },
+    "register": {
+      "cur": 1734,
+      "prev": 1777,
+      "delta": -0.0242
+    },
+    "new_channels": 0,
+    "anomaly_count": 12,
+    "metrics_cmp": [
+      {
+        "name": "DAU",
+        "cur": 1425,
+        "prev": 1388
+      },
+      {
+        "name": "付费人数",
+        "cur": 167,
+        "prev": 169
+      },
+      {
+        "name": "新增付费",
+        "cur": 380,
+        "prev": 425
+      }
+    ],
+    "anomaly_channels": [
+      {
+        "name": "RS_JUR",
+        "cur": 143.72,
+        "prev": 866.01,
+        "delta": -0.834,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 558.55,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "LemonBanjo: $542→$0(-$542), cmdr.17005701: $17→$0(-$17)",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "综合_JUR",
+        "cur": 144.95,
+        "prev": 592.43,
+        "delta": -0.7553,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 262.47,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "Rain: $192→$30(-$162), Blak: $200→$100(-$100)",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "发财团队_JUR",
+        "cur": 275.0,
+        "prev": 1006.35,
+        "delta": -0.7267,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 505.95,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "ATK: $303→$47(-$256), cmdr.15006332: $250→$0(-$250)",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "西安玩趣发财_JUR",
+        "cur": 1047.79,
+        "prev": 2831.02,
+        "delta": -0.6299,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 1740.26,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "Dragon: $1772→$442(-$1330), Spar: $302→$0(-$302), cmdr.14020731: $301→$192(-$108)",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "爱马仕",
+        "cur": 326.57,
+        "prev": 624.06,
+        "delta": -0.4767,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 0,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "无",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "殿堂网络_JUR",
+        "cur": 875.28,
+        "prev": 1469.64,
+        "delta": -0.4044,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 567.91,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "IA: $547→$0(-$547), CharWizard: $121→$100(-$21)",
+          "churn_names": "IA, CharWizard"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "君临天下",
+        "cur": 293.75,
+        "prev": 445.42,
+        "delta": -0.3405,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 259.68,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "SiThe: $300→$40(-$260)",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "广亮_JUR",
+        "cur": 803.72,
+        "prev": 1119.77,
+        "delta": -0.2822,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 348.01,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "cmdr.19009543: $226→$39(-$187), LAWDAWG: $367→$206(-$161)",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "长沙哈迪斯_JUR",
+        "cur": 1538.41,
+        "prev": 2122.7,
+        "delta": -0.2753,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 683.31,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "cmdr.15004522: $833→$395(-$439), 21Epic: $352→$156(-$196), Chilo: $193→$144(-$49)",
+          "churn_names": "cmdr.15004522"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "郑州未界发财_JUR",
+        "cur": 1563.59,
+        "prev": 2123.73,
+        "delta": -0.2638,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 95.02,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "ClIx: $475→$380(-$95)",
+          "churn_names": "ClIx"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "厄洛斯",
+        "cur": 6027.91,
+        "prev": 7226.37,
+        "delta": -0.1658,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 3057.5,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "Xyawey: $2013→$632(-$1380), cmdr.15013471: $502→$0(-$502), Kevchi: $400→$0(-$400)",
+          "churn_names": "cmdr.20007067"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "新郑乐牛发财_JUR",
+        "cur": 1170.0,
+        "prev": 1294.75,
+        "delta": -0.0964,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 334.8,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "Taybo: $538→$238(-$300), McLovin81: $158→$123(-$35)",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      }
+    ],
+    "servers": [
+      {
+        "name": "S11",
+        "days": 170,
+        "total_regs": 1370,
+        "dau_cur": 63.9,
+        "dau_prev": 67.6,
+        "pay_cur": 2574.64,
+        "pay_prev": 547.43,
+        "payers_cur": 6.4,
+        "payers_prev": 8.3,
+        "life": "[衰老期]"
+      },
+      {
+        "name": "S12",
+        "days": 150,
+        "total_regs": 1693,
+        "dau_cur": 0.0,
+        "dau_prev": 0.0,
+        "pay_cur": 350.63,
+        "pay_prev": 1069.54,
+        "payers_cur": 0.0,
+        "payers_prev": 0.0,
+        "life": "[衰老期]"
+      },
+      {
+        "name": "S13",
+        "days": 136,
+        "total_regs": 2197,
+        "dau_cur": 0.0,
+        "dau_prev": 0.0,
+        "pay_cur": 1514.51,
+        "pay_prev": 1237.31,
+        "payers_cur": 0.0,
+        "payers_prev": 0.0,
+        "life": "[衰老期]"
+      },
+      {
+        "name": "S14",
+        "days": 102,
+        "total_regs": 1912,
+        "dau_cur": 34.3,
+        "dau_prev": 40.0,
+        "pay_cur": 2324.28,
+        "pay_prev": 2496.19,
+        "payers_cur": 4.1,
+        "payers_prev": 4.9,
+        "life": "[衰老期]"
+      },
+      {
+        "name": "S15",
+        "days": 74,
+        "total_regs": 2245,
+        "dau_cur": 46.9,
+        "dau_prev": 53.3,
+        "pay_cur": 2174.02,
+        "pay_prev": 4325.31,
+        "payers_cur": 5.1,
+        "payers_prev": 5.1,
+        "life": "[衰老期]"
+      },
+      {
+        "name": "S16",
+        "days": 60,
+        "total_regs": 1356,
+        "dau_cur": 31.3,
+        "dau_prev": 37.4,
+        "pay_cur": 1430.25,
+        "pay_prev": 3062.37,
+        "payers_cur": 4.7,
+        "payers_prev": 4.0,
+        "life": "[稳定期]"
+      },
+      {
+        "name": "S17",
+        "days": 53,
+        "total_regs": 1546,
+        "dau_cur": 48.0,
+        "dau_prev": 56.9,
+        "pay_cur": 1950.93,
+        "pay_prev": 1744.0,
+        "payers_cur": 5.4,
+        "payers_prev": 6.0,
+        "life": "[稳定期]"
+      },
+      {
+        "name": "S18",
+        "days": 46,
+        "total_regs": 1681,
+        "dau_cur": 49.4,
+        "dau_prev": 66.1,
+        "pay_cur": 1287.57,
+        "pay_prev": 1532.82,
+        "payers_cur": 3.7,
+        "payers_prev": 5.7,
+        "life": "[稳定期]"
+      },
+      {
+        "name": "S19",
+        "days": 39,
+        "total_regs": 1085,
+        "dau_cur": 50.6,
+        "dau_prev": 60.3,
+        "pay_cur": 1439.36,
+        "pay_prev": 1404.85,
+        "payers_cur": 4.0,
+        "payers_prev": 5.7,
+        "life": "[稳定期]"
+      },
+      {
+        "name": "S20",
+        "days": 32,
+        "total_regs": 1248,
+        "dau_cur": 71.3,
+        "dau_prev": 97.4,
+        "pay_cur": 4375.48,
+        "pay_prev": 2525.6,
+        "payers_cur": 6.7,
+        "payers_prev": 10.6,
+        "life": "[稳定期]"
+      },
+      {
+        "name": "S21",
+        "days": 25,
+        "total_regs": 1549,
+        "dau_cur": 95.4,
+        "dau_prev": 150.9,
+        "pay_cur": 2431.87,
+        "pay_prev": 3798.34,
+        "payers_cur": 10.7,
+        "payers_prev": 18.6,
+        "life": "[成长期]"
+      },
+      {
+        "name": "S22",
+        "days": 18,
+        "total_regs": 2009,
+        "dau_cur": 206.4,
+        "dau_prev": 504.3,
+        "pay_cur": 4779.04,
+        "pay_prev": 8417.94,
+        "payers_cur": 22.6,
+        "payers_prev": 56.9,
+        "life": "[成长期]"
+      },
+      {
+        "name": "S23",
+        "days": 11,
+        "total_regs": 2115,
+        "dau_cur": 487.3,
+        "dau_prev": 310.0,
+        "pay_cur": 7612.93,
+        "pay_prev": 3463.44,
+        "payers_cur": 58.6,
+        "payers_prev": 42.7,
+        "life": "[成长期]"
+      },
+      {
+        "name": "S24",
+        "days": 4,
+        "total_regs": 2151,
+        "dau_cur": 301.1,
+        "dau_prev": 0.0,
+        "pay_cur": 3707.6,
+        "pay_prev": 0.0,
+        "payers_cur": 34.4,
+        "payers_prev": 0.0,
+        "life": "[新开服]"
+      },
+      {
+        "name": "S25",
+        "days": -3,
+        "total_regs": 391,
+        "dau_cur": 0.0,
+        "dau_prev": 0.0,
+        "pay_cur": 0.0,
+        "pay_prev": 0.0,
+        "payers_cur": 0.0,
+        "payers_prev": 0.0,
+        "life": "[新开服]"
+      }
+    ],
+    "churn": [
+      {
+        "name": "IA",
+        "ucid": "16020022004426",
+        "channel": "殿堂网络_JUR",
+        "server": "S22",
+        "total_pay": 587.89,
+        "last_login_days": 3
+      },
+      {
+        "name": "cmdr.20007067",
+        "ucid": "16020020007067",
+        "channel": "厄洛斯",
+        "server": "S20",
+        "total_pay": 715.56,
+        "last_login_days": 3
+      },
+      {
+        "name": "CharWizard",
+        "ucid": "16020020006095",
+        "channel": "殿堂网络_JUR",
+        "server": "S20",
+        "total_pay": 626.64,
+        "last_login_days": 6
+      },
+      {
+        "name": "CeeJay",
+        "ucid": "16020019003309",
+        "channel": "天津简游发财_JUR",
+        "server": "S19",
+        "total_pay": 1962.34,
+        "last_login_days": 3
+      },
+      {
+        "name": "RAGNAR",
+        "ucid": "16020018003925",
+        "channel": "发财_JUR",
+        "server": "S18",
+        "total_pay": 644.92,
+        "last_login_days": 6
+      },
+      {
+        "name": "cmdr.18003587",
+        "ucid": "16020018003587",
+        "channel": "在水一方_JUR",
+        "server": "S18",
+        "total_pay": 2709.17,
+        "last_login_days": 3
+      },
+      {
+        "name": "ClIx",
+        "ucid": "16020017003303",
+        "channel": "郑州未界发财_JUR",
+        "server": "S17",
+        "total_pay": 3705.54,
+        "last_login_days": 5
+      },
+      {
+        "name": "Nova",
+        "ucid": "16020017003071",
+        "channel": "广州昊天游_JUR",
+        "server": "S17",
+        "total_pay": 620.35,
+        "last_login_days": 3
+      },
+      {
+        "name": "cmdr.16005137",
+        "ucid": "16020016005137",
+        "channel": "广州昊天游_JUR",
+        "server": "S16",
+        "total_pay": 545.84,
+        "last_login_days": 6
+      },
+      {
+        "name": "cmdr.15004522",
+        "ucid": "16020015004522",
+        "channel": "长沙哈迪斯_JUR",
+        "server": "S15",
+        "total_pay": 3343.36,
+        "last_login_days": 3
+      }
+    ]
+  }
+};
+const HISTORY_DATA = {
+  "history": {
+    "servers": [
+      {
+        "name": "S11",
+        "days": 175,
+        "regs": 1370,
+        "total_rev": 44234.59,
+        "total_payers": 306,
+        "rev7": 24.54,
+        "active7": 23,
+        "payers7": 6
+      },
+      {
+        "name": "S12",
+        "days": 155,
+        "regs": 1693,
+        "total_rev": 56023.76,
+        "total_payers": 417,
+        "rev7": 33.05,
+        "active7": 28,
+        "payers7": 9
+      },
+      {
+        "name": "S13",
+        "days": 141,
+        "regs": 2197,
+        "total_rev": 38311.77,
+        "total_payers": 421,
+        "rev7": 71.38,
+        "active7": 26,
+        "payers7": 4
+      },
+      {
+        "name": "S14",
+        "days": 107,
+        "regs": 1912,
+        "total_rev": 58184.44,
+        "total_payers": 356,
+        "rev7": 323.48,
+        "active7": 47,
+        "payers7": 9
+      },
+      {
+        "name": "S15",
+        "days": 79,
+        "regs": 2245,
+        "total_rev": 80108.46,
+        "total_payers": 447,
+        "rev7": 151.74,
+        "active7": 58,
+        "payers7": 11
+      },
+      {
+        "name": "S16",
+        "days": 65,
+        "regs": 1356,
+        "total_rev": 35362.53,
+        "total_payers": 269,
+        "rev7": 73.72,
+        "active7": 36,
+        "payers7": 5
+      },
+      {
+        "name": "S17",
+        "days": 58,
+        "regs": 1546,
+        "total_rev": 27671.95,
+        "total_payers": 312,
+        "rev7": 197.65,
+        "active7": 60,
+        "payers7": 18
+      },
+      {
+        "name": "S18",
+        "days": 51,
+        "regs": 1681,
+        "total_rev": 23544.54,
+        "total_payers": 309,
+        "rev7": 127.12,
+        "active7": 58,
+        "payers7": 10
+      },
+      {
+        "name": "S19",
+        "days": 44,
+        "regs": 1085,
+        "total_rev": 16206.08,
+        "total_payers": 235,
+        "rev7": 56.88,
+        "active7": 64,
+        "payers7": 11
+      },
+      {
+        "name": "S20",
+        "days": 37,
+        "regs": 1248,
+        "total_rev": 23615.43,
+        "total_payers": 241,
+        "rev7": 305.23,
+        "active7": 87,
+        "payers7": 12
+      },
+      {
+        "name": "S21",
+        "days": 30,
+        "regs": 1549,
+        "total_rev": 16055.13,
+        "total_payers": 279,
+        "rev7": 348.05,
+        "active7": 114,
+        "payers7": 27
+      },
+      {
+        "name": "S22",
+        "days": 23,
+        "regs": 2009,
+        "total_rev": 17769.44,
+        "total_payers": 370,
+        "rev7": 361.04,
+        "active7": 225,
+        "payers7": 49
+      },
+      {
+        "name": "S23",
+        "days": 16,
+        "regs": 2115,
+        "total_rev": 14564.67,
+        "total_payers": 432,
+        "rev7": 666.99,
+        "active7": 453,
+        "payers7": 107
+      },
+      {
+        "name": "S24",
+        "days": 9,
+        "regs": 2151,
+        "total_rev": 11422.02,
+        "total_payers": 324,
+        "rev7": 1290.01,
+        "active7": 1581,
+        "payers7": 233
+      },
+      {
+        "name": "S25",
+        "days": 2,
+        "regs": 391,
+        "total_rev": 220.81,
+        "total_payers": 41,
+        "rev7": 31.54,
+        "active7": 391,
+        "payers7": 41
+      }
+    ],
+    "channels": [
+      {
+        "name": "聚冠_JUR",
+        "days": 175,
+        "regs": 4678,
+        "total_rev": 89402.26,
+        "ltv": 19.11,
+        "status": "活跃",
+        "remain": 324,
+        "remain_pay": 141
+      },
+      {
+        "name": "厄洛斯",
+        "days": 171,
+        "regs": 3652,
+        "total_rev": 132137.04,
+        "ltv": 36.18,
+        "status": "活跃",
+        "remain": 229,
+        "remain_pay": 124
+      },
+      {
+        "name": "郑州未界发财_JUR",
+        "days": 167,
+        "regs": 1808,
+        "total_rev": 29145.79,
+        "ltv": 16.12,
+        "status": "活跃",
+        "remain": 204,
+        "remain_pay": 65
+      },
+      {
+        "name": "李航",
+        "days": 162,
+        "regs": 1706,
+        "total_rev": 18809.63,
+        "ltv": 11.03,
+        "status": "活跃",
+        "remain": 252,
+        "remain_pay": 114
+      },
+      {
+        "name": "长沙哈迪斯_JUR",
+        "days": 133,
+        "regs": 1135,
+        "total_rev": 15101.97,
+        "ltv": 13.31,
+        "status": "活跃",
+        "remain": 64,
+        "remain_pay": 39
+      },
+      {
+        "name": "新郑乐牛发财_JUR",
+        "days": 154,
+        "regs": 1103,
+        "total_rev": 11470.04,
+        "ltv": 10.4,
+        "status": "活跃",
+        "remain": 174,
+        "remain_pay": 61
+      },
+      {
+        "name": "西安玩趣发财_JUR",
+        "days": 134,
+        "regs": 1020,
+        "total_rev": 22331.94,
+        "ltv": 21.89,
+        "status": "活跃",
+        "remain": 74,
+        "remain_pay": 33
+      },
+      {
+        "name": "梵克雅宝",
+        "days": 23,
+        "regs": 1006,
+        "total_rev": 11588.19,
+        "ltv": 11.52,
+        "status": "活跃",
+        "remain": 326,
+        "remain_pay": 88
+      },
+      {
+        "name": "广州昊天游_JUR",
+        "days": 80,
+        "regs": 923,
+        "total_rev": 17868.31,
+        "ltv": 19.36,
+        "status": "活跃",
+        "remain": 56,
+        "remain_pay": 36
+      },
+      {
+        "name": "laoxia_JUR",
+        "days": 93,
+        "regs": 838,
+        "total_rev": 6777.82,
+        "ltv": 8.09,
+        "status": "活跃",
+        "remain": 272,
+        "remain_pay": 76
+      },
+      {
+        "name": "弑神阁",
+        "days": 71,
+        "regs": 604,
+        "total_rev": 3493.09,
+        "ltv": 5.78,
+        "status": "活跃",
+        "remain": 139,
+        "remain_pay": 32
+      },
+      {
+        "name": "奥丁_JUR",
+        "days": 175,
+        "regs": 601,
+        "total_rev": 8702.68,
+        "ltv": 14.48,
+        "status": "活跃",
+        "remain": 6,
+        "remain_pay": 6
+      },
+      {
+        "name": "稻米团队_JUR",
+        "days": 79,
+        "regs": 596,
+        "total_rev": 856.44,
+        "ltv": 1.44,
+        "status": "活跃",
+        "remain": 55,
+        "remain_pay": 19
+      },
+      {
+        "name": "殿堂网络_JUR",
+        "days": 68,
+        "regs": 574,
+        "total_rev": 3895.67,
+        "ltv": 6.79,
+        "status": "活跃",
+        "remain": 144,
+        "remain_pay": 46
+      },
+      {
+        "name": "在水一方_JUR",
+        "days": 66,
+        "regs": 535,
+        "total_rev": 18349.06,
+        "ltv": 34.3,
+        "status": "活跃",
+        "remain": 130,
+        "remain_pay": 64
+      },
+      {
+        "name": "雅典娜",
+        "days": 33,
+        "regs": 450,
+        "total_rev": 3741.06,
+        "ltv": 8.31,
+        "status": "活跃",
+        "remain": 190,
+        "remain_pay": 67
+      },
+      {
+        "name": "满翼网络发财_JUR",
+        "days": 128,
+        "regs": 383,
+        "total_rev": 3293.22,
+        "ltv": 8.6,
+        "status": "活跃",
+        "remain": 8,
+        "remain_pay": 6
+      },
+      {
+        "name": "RS_JUR",
+        "days": 59,
+        "regs": 368,
+        "total_rev": 2184.82,
+        "ltv": 5.94,
+        "status": "活跃",
+        "remain": 31,
+        "remain_pay": 18
+      },
+      {
+        "name": "天津简游发财_JUR",
+        "days": 127,
+        "regs": 344,
+        "total_rev": 5445.24,
+        "ltv": 15.83,
+        "status": "活跃",
+        "remain": 8,
+        "remain_pay": 6
+      },
+      {
+        "name": "木楠宜巨兽",
+        "days": 147,
+        "regs": 277,
+        "total_rev": 4.95,
+        "ltv": 0.02,
+        "status": "已停量",
+        "remain": 0,
+        "remain_pay": 0
+      },
+      {
+        "name": "广亮_JUR",
+        "days": 133,
+        "regs": 270,
+        "total_rev": 4221.56,
+        "ltv": 15.64,
+        "status": "活跃",
+        "remain": 64,
+        "remain_pay": 30
+      },
+      {
+        "name": "西安波塞冬_JUR",
+        "days": 163,
+        "regs": 187,
+        "total_rev": 1641.85,
+        "ltv": 8.78,
+        "status": "已停量",
+        "remain": 4,
+        "remain_pay": 4
+      },
+      {
+        "name": "爱马仕",
+        "days": 30,
+        "regs": 171,
+        "total_rev": 2191.77,
+        "ltv": 12.82,
+        "status": "活跃",
+        "remain": 19,
+        "remain_pay": 15
+      },
+      {
+        "name": "君临天下",
+        "days": 61,
+        "regs": 164,
+        "total_rev": 4272.91,
+        "ltv": 26.05,
+        "status": "活跃",
+        "remain": 45,
+        "remain_pay": 11
+      },
+      {
+        "name": "克罗心SX",
+        "days": 24,
+        "regs": 147,
+        "total_rev": 261.4,
+        "ltv": 1.78,
+        "status": "活跃",
+        "remain": 86,
+        "remain_pay": 17
+      },
+      {
+        "name": "发财团队_JUR",
+        "days": 79,
+        "regs": 137,
+        "total_rev": 13134.28,
+        "ltv": 95.87,
+        "status": "活跃",
+        "remain": 12,
+        "remain_pay": 7
+      },
+      {
+        "name": "潘多拉",
+        "days": 12,
+        "regs": 102,
+        "total_rev": 776.68,
+        "ltv": 7.61,
+        "status": "活跃",
+        "remain": 81,
+        "remain_pay": 11
+      },
+      {
+        "name": "范思哲WH",
+        "days": 49,
+        "regs": 93,
+        "total_rev": 618.27,
+        "ltv": 6.65,
+        "status": "活跃",
+        "remain": 13,
+        "remain_pay": 6
+      },
+      {
+        "name": "精聊發發發团队",
+        "days": 13,
+        "regs": 91,
+        "total_rev": 566.58,
+        "ltv": 6.23,
+        "status": "活跃",
+        "remain": 63,
+        "remain_pay": 15
+      },
+      {
+        "name": "香奈儿GD",
+        "days": 29,
+        "regs": 88,
+        "total_rev": 378.77,
+        "ltv": 4.3,
+        "status": "活跃",
+        "remain": 53,
+        "remain_pay": 14
+      },
+      {
+        "name": "未界_JUR",
+        "days": 119,
+        "regs": 87,
+        "total_rev": 850.63,
+        "ltv": 9.78,
+        "status": "活跃",
+        "remain": 2,
+        "remain_pay": 2
+      },
+      {
+        "name": "长沙万氪_JUR",
+        "days": 83,
+        "regs": 73,
+        "total_rev": 612.78,
+        "ltv": 8.39,
+        "status": "活跃",
+        "remain": 28,
+        "remain_pay": 9
+      },
+      {
+        "name": "综合_JUR",
+        "days": 175,
+        "regs": 68,
+        "total_rev": 25692.41,
+        "ltv": 377.83,
+        "status": "活跃",
+        "remain": 5,
+        "remain_pay": 5
+      },
+      {
+        "name": "金桂精聊",
+        "days": 30,
+        "regs": 67,
+        "total_rev": 210.49,
+        "ltv": 3.14,
+        "status": "活跃",
+        "remain": 13,
+        "remain_pay": 11
+      },
+      {
+        "name": "路西法",
+        "days": 145,
+        "regs": 63,
+        "total_rev": 1392.86,
+        "ltv": 22.11,
+        "status": "已停量",
+        "remain": 1,
+        "remain_pay": 1
+      },
+      {
+        "name": "卡地亚巨兽",
+        "days": 10,
+        "regs": 55,
+        "total_rev": 146.73,
+        "ltv": 2.67,
+        "status": "活跃",
+        "remain": 39,
+        "remain_pay": 7
+      },
+      {
+        "name": "发财_JUR",
+        "days": 134,
+        "regs": 40,
+        "total_rev": 1933.08,
+        "ltv": 48.33,
+        "status": "已停量",
+        "remain": 3,
+        "remain_pay": 3
+      },
+      {
+        "name": "恐龙发财团队",
+        "days": 8,
+        "regs": 33,
+        "total_rev": 17.94,
+        "ltv": 0.54,
+        "status": "活跃",
+        "remain": 32,
+        "remain_pay": 3
+      },
+      {
+        "name": "源昇",
+        "days": 156,
+        "regs": 15,
+        "total_rev": 6.97,
+        "ltv": 0.46,
+        "status": "已停量",
+        "remain": 0,
+        "remain_pay": 0
+      },
+      {
+        "name": "一部精聊",
+        "days": 22,
+        "regs": 12,
+        "total_rev": 4.99,
+        "ltv": 0.42,
+        "status": "已停量",
+        "remain": 1,
+        "remain_pay": 1
+      },
+      {
+        "name": "海王_JUR",
+        "days": 52,
+        "regs": 8,
+        "total_rev": 54.82,
+        "ltv": 6.85,
+        "status": "已停量",
+        "remain": 0,
+        "remain_pay": 0
+      },
+      {
+        "name": "九霄龙吟",
+        "days": 69,
+        "regs": 6,
+        "total_rev": 53.95,
+        "ltv": 8.99,
+        "status": "已停量",
+        "remain": 0,
+        "remain_pay": 0
+      },
+      {
+        "name": "转游发财_JUR",
+        "days": 72,
+        "regs": 6,
+        "total_rev": 13.97,
+        "ltv": 2.33,
+        "status": "已停量",
+        "remain": 0,
+        "remain_pay": 0
+      },
+      {
+        "name": "金桂换端",
+        "days": 7,
+        "regs": 3,
+        "total_rev": 5.98,
+        "ltv": 1.99,
+        "status": "活跃",
+        "remain": 3,
+        "remain_pay": 1
+      }
+    ]
+  }
+};
+
+
+/* ================== 默认 Demo 数据 ================== */
+let appData = {
+  daily: {
+    date: "2026-06-08",
+    revenue: { yesterday: 3150, day_before: 4120, delta: -0.236, avg7: 3500 },
+    register: { yesterday: 142, day_before: 138, delta: 0.029, avg7: 145 },
+    new_payers: { yesterday: 8, day_before: 12, delta: -0.333, avg7: 10 },
+    new_pay_rate: { yesterday: 0.056, day_before: 0.087, delta: -0.356, avg7: 0.068 },
+    summary: "营收$3,150（-23.6%），活动后正常回落；注册142人（+2.9%）平稳；新增付费8人，付费率5.6%偏低。",
+    channel_rev: [
+      {name:"ZEUS_TDN", val:980}, {name:"THOR_TDN", val:720}, {name:"ODIN_JUR", val:610},
+      {name:"LOKI_JUR", val:340}, {name:"FREYR_TDN", val:210}
+    ],
+    channel_reg_top5: [
+      {name:"ZEUS_TDN", val:45}, {name:"THOR_TDN", val:32}, {name:"ODIN_JUR", val:28},
+      {name:"LOKI_JUR", val:18}, {name:"FREYR_TDN", val:12}
+    ],
+    anomaly_channels: [
+      {
+        name:"李航_JUR", yest:322, before:930, delta:-0.654,
+        reason_detail: {
+          type: "mixed",
+          big_r_drop: 63.36,
+          volume_drop: 544.64,
+          big_r_names: "Chris27($63.36)"
+        }
+      }
+    ],
+    reg_anomaly_channels: [
+      {name:"FREYR_TDN", yest:12, before:28, delta:-0.571, reason:"量跌"}
+    ],
+    server_rev: [
+      {name:"S11", yest:120, before:110, delta:0.091, days:65},
+      {name:"S12", yest:95, before:100, delta:-0.05, days:58},
+      {name:"S16", yest:420, before:380, delta:0.105, days:45},
+      {name:"S18", yest:310, before:340, delta:-0.088, days:38},
+      {name:"S20", yest:290, before:410, delta:-0.293, days:21},
+      {name:"S25", yest:180, before:160, delta:0.125, days:14}
+    ],
+    churn_alert: [
+      {name:"PlayerA", ucid:"U12345", channel:"ZEUS_TDN", server:"S16", total_pay:1200, last_login_days:5},
+      {name:"PlayerB", ucid:"U67890", channel:"THOR_TDN", server:"S18", total_pay:800, last_login_days:4}
+    ]
+  },
+  weekly: {
+    weeks: ["05/23~05/29", "05/30~06/05"],
+    revenue: { cur: 24500, prev: 18900, delta: 0.296 },
+    register: { cur: 980, prev: 720, delta: 0.361 },
+    new_channels: 2,
+    anomaly_count: 1,
+    metrics_cmp: [
+      {name:"营收", cur:24500, prev:18900},
+      {name:"注册", cur:980, prev:720},
+      {name:"DAU", cur:4200, prev:3800},
+      {name:"付费人数", cur:156, prev:132},
+      {name:"新增付费", cur:45, prev:38}
+    ],
+    anomaly_channels: [
+      {
+        name:"发财团队_JUR", cur:275, prev:1000, delta:-0.725,
+        reason_detail: {
+          type: "mixed",
+          big_r_drop: 150,
+          volume_drop: 575,
+          big_r_names: "大R1($80), 大R2($70)"
+        },
+        status:"正常"
+      }
+    ],
+    servers: [
+      {name:"S16", dau_cur:1200, dau_prev:1150, pay_cur:5800, pay_prev:5200, life:"[健康期]"},
+      {name:"S18", dau_cur:980, dau_prev:1050, pay_cur:4200, pay_prev:4800, life:"[稳定期]"},
+      {name:"S20", dau_cur:450, dau_prev:0, pay_cur:2100, pay_prev:0, life:"[新开服]"}
+    ],
+    churn: [
+      {name:"OldPlayer1", ucid:"U11111", channel:"发财团队_JUR", server:"S16", total_pay:650, last_login_days:6},
+      {name:"OldPlayer2", ucid:"U22222", channel:"ZEUS_TDN", server:"S18", total_pay:1200, last_login_days:4}
+    ]
+  },
+  history: {
+    servers: [
+      {name:"S11", days:65, regs:3200, total_rev:85000, total_payers:280, rev7:120, active7:450, payers7:35},
+      {name:"S12", days:58, regs:2800, total_rev:72000, total_payers:240, rev7:95, active7:380, payers7:28},
+      {name:"S16", days:45, regs:4200, total_rev:120000, total_payers:380, rev7:420, active7:1200, payers7:85},
+      {name:"S18", days:38, regs:3600, total_rev:95000, total_payers:310, rev7:310, active7:980, payers7:62},
+      {name:"S20", days:21, regs:2100, total_rev:48000, total_payers:180, rev7:290, active7:450, payers7:42},
+      {name:"S25", days:14, regs:1200, total_rev:22000, total_payers:95, rev7:180, active7:280, payers7:22}
+    ],
+    channels: [
+      {name:"ZEUS_TDN", days:120, regs:12500, total_rev:320000, ltv:25.6, status:"正常", remain:850, remain_pay:120},
+      {name:"THOR_TDN", days:115, regs:9800, total_rev:245000, ltv:25.0, status:"正常", remain:620, remain_pay:95},
+      {name:"ODIN_JUR", days:110, regs:8200, total_rev:198000, ltv:24.1, status:"正常", remain:540, remain_pay:78},
+      {name:"发财团队_JUR", days:90, regs:6500, total_rev:120000, ltv:18.5, status:"停量", remain:120, remain_pay:15},
+      {name:"西安玩趣_JUR", days:85, regs:5200, total_rev:85000, ltv:16.3, status:"停量", remain:80, remain_pay:8}
+    ]
+  }
+};
+
+let charts = {};
+
+/* ================== 自动检测同目录 JS 数据文件 ================== */
+function autoLoadData() {
+  let loaded = [], missing = [];
+  if (typeof DAILY_DATA !== 'undefined' && DAILY_DATA && DAILY_DATA.daily) {
+    appData.daily = DAILY_DATA.daily; loaded.push('日报');
+  } else { missing.push('daily_data.js'); }
+  if (typeof WEEKLY_DATA !== 'undefined' && WEEKLY_DATA && WEEKLY_DATA.weekly) {
+    appData.weekly = WEEKLY_DATA.weekly; loaded.push('周报');
+  } else { missing.push('weekly_data.js'); }
+  if (typeof HISTORY_DATA !== 'undefined' && HISTORY_DATA && HISTORY_DATA.history) {
+    appData.history = HISTORY_DATA.history; loaded.push('历史');
+  }
+
+  if (loaded.length > 0) {
+    document.getElementById('statusBar').innerHTML = '✅ 已自动加载: <b>' + loaded.join('、') + '</b>';
+    document.getElementById('uploadWrap').style.display = 'none';
+  } else {
+    document.getElementById('statusBar').innerHTML = '⚠️ 未找到数据文件，显示 Demo 数据';
+    document.getElementById('uploadWrap').style.display = 'flex';
+  }
+  refreshActiveTab();
+}
+
+/* ================== 文件上传处理（fallback） ================== */
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      let data;
+      const text = ev.target.result.trim();
+      if (text.startsWith('const DAILY_DATA')) {
+        data = JSON.parse(text.replace(/^const\s+DAILY_DATA\s*=\s*/, '').replace(/;\s*$/, ''));
+        if (data.daily) appData.daily = data.daily;
+      } else if (text.startsWith('const WEEKLY_DATA')) {
+        data = JSON.parse(text.replace(/^const\s+WEEKLY_DATA\s*=\s*/, '').replace(/;\s*$/, ''));
+        if (data.weekly) appData.weekly = data.weekly;
+      } else if (text.startsWith('const HISTORY_DATA')) {
+        data = JSON.parse(text.replace(/^const\s+HISTORY_DATA\s*=\s*/, '').replace(/;\s*$/, ''));
+        if (data.history) appData.history = data.history;
+      } else {
+        data = JSON.parse(text);
+        if (data.daily) appData.daily = data.daily;
+        if (data.weekly) appData.weekly = data.weekly;
+        if (data.history) appData.history = data.history;
+      }
+      document.getElementById('statusBar').innerHTML = '✅ 已加载: <b>' + file.name + '</b>';
+      document.getElementById('uploadWrap').style.display = 'none';
+      refreshActiveTab();
+    } catch(err) { alert('文件解析失败: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+/* ================== 渲染函数 ================== */
+function fmtMoney(n) {
+  if (n === undefined || n === null || isNaN(n)) return '-';
+  if (Math.abs(n) >= 10000) return '$' + (n/10000).toFixed(1) + 'w';
+  if (Math.abs(n) >= 1000) return '$' + (n/1000).toFixed(1) + 'k';
+  return '$' + Math.round(n).toLocaleString();
+}
+function fmtDelta(v) {
+  if (v === undefined || v === null || isNaN(v)) return '<span class="delta neutral">--</span>';
+  const pct = (v*100).toFixed(1) + '%';
+  if (v > 0) return `<span class="delta up">▲ ${pct}</span>`;
+  if (v < 0) return `<span class="delta down">▼ ${pct}</span>`;
+  return `<span class="delta neutral">→ 0%</span>`;
+}
+function tagClass(v, type='trend') {
+  if (type === 'life') {
+    if (v.includes('健康')) return 'tag green';
+    if (v.includes('新开')) return 'tag yellow';
+    if (v.includes('衰老') || v.includes('停')) return 'tag red';
+    return 'tag gray';
+  }
+  if (type === 'status') {
+    if (v === '正常' || v === '活跃') return 'tag green';
+    if (v && v.includes('停量')) return 'tag red';
+    return 'tag gray';
+  }
+  if (v > 0) return 'trend-up';
+  if (v < 0) return 'trend-down';
+  return '';
+}
+
+function renderBarChart(domId, data, color, prefix) {
+  if (charts[domId]) charts[domId].dispose();
+  charts[domId] = echarts.init(document.getElementById(domId));
+  charts[domId].setOption({
+    tooltip: { trigger:'axis', axisPointer:{type:'shadow'} },
+    grid: { left:'3%', right:'8%', bottom:'3%', top:'5%', containLabel:true },
+    xAxis: { type:'value', axisLine:{lineStyle:{color:'#475569'}}, splitLine:{lineStyle:{color:'#1e293b'}}, axisLabel:{color:'#94a3b8'} },
+    yAxis: { type:'category', data:data.map(i=>i.name).reverse(), axisLine:{lineStyle:{color:'#475569'}}, axisLabel:{color:'#cbd5e1'} },
+    series: [{
+      type:'bar', data:data.map(i=>i.val).reverse(),
+      itemStyle:{ borderRadius:[0,6,6,0], color:color },
+      label:{ show:true, position:'right', formatter:prefix+'{c}', color:'#f1f5f9' }
+    }]
+  });
+}
+
+/* 差值分解渲染 */
+function renderDiffBreakdown(r) {
+  if (!r.reason_detail) return '<span class="tag gray">暂无分解</span>';
+  const d = r.reason_detail;
+  // 兼容日报(yest/before)和周报(cur/prev)两种数据结构
+  const cur = r.yest !== undefined ? r.yest : r.cur;
+  const prev = r.before !== undefined ? r.before : r.prev;
+  const totalDrop = Math.abs(prev - cur);
+  const parts = [];
+
+  // 大R停付
+  if (d.big_r_stop > 0.01) {
+    const names = d.big_r_names && d.big_r_names !== '无' ? d.big_r_names : '';
+    parts.push(`<span class="tag red">大R停付 -$${isNaN(totalDrop) ? '?' : totalDrop.toFixed(0)}: $${d.big_r_stop.toFixed(0)}${names ? ' | ' + names : ''}</span>`);
+  }
+  // 大R流失
+  if (d.big_r_churn > 0.01 || (d.churn_names && d.churn_names !== '无')) {
+    parts.push(`<span class="tag yellow">大R流失${d.big_r_churn > 0.01 ? ' -$'+d.big_r_churn.toFixed(0) : ''}${d.churn_names && d.churn_names !== '无' ? ' | ' + d.churn_names : ''}</span>`);
+  }
+  // 注册量跌
+  if (d.reg_drop > 0.01) {
+    parts.push(`<span class="tag blue">量跌 -$${d.reg_drop.toFixed(0)}</span>`);
+  }
+  // 质量下降
+  if (d.quality_drop > 0.01) {
+    parts.push(`<span class="tag gray">质跌 -$${d.quality_drop.toFixed(0)}</span>`);
+  }
+
+  if (parts.length === 0) {
+    return '<span class="tag gray">暂无明确原因</span>';
+  }
+  return `<div style="display:flex;flex-wrap:wrap;gap:4px;">${parts.join('')}</div>`;
+}
+
+function renderDaily(d) {
+  document.getElementById('pageSubTitle').textContent = (d.date||'-') + ' 日报 | UTC±0';
+
+  document.getElementById('d_rev').textContent = fmtMoney(d.revenue?.yesterday);
+  document.getElementById('d_rev_before').textContent = fmtMoney(d.revenue?.day_before);
+  document.getElementById('d_rev_avg7').textContent = fmtMoney(d.revenue?.avg7);
+  document.getElementById('d_rev_avg30').textContent = fmtMoney(d.revenue?.avg30);
+  document.getElementById('d_rev_delta').innerHTML = fmtDelta(d.revenue?.delta);
+  const revAbnormal = Math.abs(d.revenue?.delta||0) >= 0.15;
+  document.getElementById('d_rev_badge').textContent = revAbnormal ? '异常' : '正常';
+  document.getElementById('d_rev_badge').className = 'badge ' + (revAbnormal ? 'alert' : 'ok');
+
+  document.getElementById('d_reg').textContent = d.register?.yesterday ?? '-';
+  document.getElementById('d_reg_before').textContent = d.register?.day_before ?? '-';
+  document.getElementById('d_reg_avg7').textContent = d.register?.avg7 ?? '-';
+  document.getElementById('d_reg_avg30').textContent = d.register?.avg30 ?? '-';
+  document.getElementById('d_reg_delta').innerHTML = fmtDelta(d.register?.delta);
+
+  document.getElementById('d_newpay').textContent = d.new_payers?.yesterday ?? '-';
+  document.getElementById('d_newpay_before').textContent = d.new_payers?.day_before ?? '-';
+  document.getElementById('d_newpay_avg7').textContent = d.new_payers?.avg7 ?? '-';
+  document.getElementById('d_newpay_avg30').textContent = d.new_payers?.avg30 ?? '-';
+  document.getElementById('d_newpay_delta').innerHTML = fmtDelta(d.new_payers?.delta);
+
+  document.getElementById('d_newrate').textContent = d.new_pay_rate ? (d.new_pay_rate.yesterday*100).toFixed(1)+'%' : '-';
+  document.getElementById('d_newrate_before').textContent = d.new_pay_rate ? (d.new_pay_rate.day_before*100).toFixed(1)+'%' : '-';
+  document.getElementById('d_newrate_avg7').textContent = d.new_pay_rate && d.new_pay_rate.avg7 ? (d.new_pay_rate.avg7*100).toFixed(1)+'%' : '-';
+  document.getElementById('d_newrate_avg30').textContent = d.new_pay_rate && d.new_pay_rate.avg30 ? (d.new_pay_rate.avg30*100).toFixed(1)+'%' : '-';
+  document.getElementById('d_newrate_delta').innerHTML = fmtDelta(d.new_pay_rate?.delta);
+  document.getElementById('d_summary').innerHTML = d.summary || '暂无摘要';
+
+  renderBarChart('chart_channel_rev', d.channel_rev || [], '#2563eb', '$');
+  renderBarChart('chart_channel_reg', d.channel_reg_top5 || [], '#10b981', '');
+
+  const atb = document.querySelector('#table_anomaly tbody');
+  const anoms = d.anomaly_channels || [];
+  atb.innerHTML = anoms.length ? anoms.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${fmtMoney(r.yest)}</td><td>${fmtMoney(r.before)}</td>
+    <td class="${tagClass(r.delta)}">${(r.delta*100).toFixed(1)}%</td>
+    <td>${renderDiffBreakdown(r)}</td></tr>`).join('')
+    : '<tr><td colspan="5" class="empty-state">本日没有营收异常渠道（已过滤昨日收入<$100）</td></tr>';
+
+  const rtb = document.querySelector('#table_reg_anomaly tbody');
+  const regAnoms = d.reg_anomaly_channels || [];
+  rtb.innerHTML = regAnoms.length ? regAnoms.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${r.yest}</td><td>${r.before}</td>
+    <td class="${tagClass(r.delta)}">${(r.delta*100).toFixed(1)}%</td>
+    <td><span class="tag gray">${r.reason}</span></td></tr>`).join('')
+    : '<tr><td colspan="5" class="empty-state">本日没有注册异常渠道（已过滤昨日注册<5）</td></tr>';
+
+  const ctb = document.querySelector('#table_churn_alert tbody');
+  const churn = d.churn_alert || [];
+  ctb.innerHTML = churn.length ? churn.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${r.ucid}</td><td>${r.channel}</td>
+    <td>${r.server}</td><td>${fmtMoney(r.total_pay)}</td>
+    <td><span class="tag yellow">${r.last_login_days}天前</span></td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty-state">暂无流失预警玩家（历史付费>$500，最后登录3-7天）</td></tr>';
+
+  const stb = document.querySelector('#table_server tbody');
+  const srvs = d.server_rev || [];
+  stb.innerHTML = srvs.length ? srvs.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${fmtMoney(r.yest)}</td><td>${fmtMoney(r.before)}</td>
+    <td class="${tagClass(r.delta)}">${(r.delta*100).toFixed(1)}%</td><td>${r.days}天</td></tr>`).join('')
+    : '<tr><td colspan="5" class="empty-state">暂无区服数据</td></tr>';
+}
+
+function renderWeekly(w) {
+  document.getElementById('pageSubTitle').textContent = '周报 | ' + (w.weeks?.[1]||'');
+  document.getElementById('w_rev_cur').textContent = fmtMoney(w.revenue?.cur);
+  document.getElementById('w_rev_prev').textContent = fmtMoney(w.revenue?.prev);
+  document.getElementById('w_rev_delta2').innerHTML = fmtDelta(w.revenue?.delta);
+  document.getElementById('w_reg_cur').textContent = w.register?.cur ?? '-';
+  document.getElementById('w_reg_prev').textContent = w.register?.prev ?? '-';
+  document.getElementById('w_reg_delta2').innerHTML = fmtDelta(w.register?.delta);
+  document.getElementById('w_newch').textContent = w.new_channels ?? '-';
+  document.getElementById('w_anomaly').textContent = w.anomaly_count ?? '-';
+  document.getElementById('w_anomaly_txt').textContent = (w.anomaly_count||0) > 0 ? '需关注' : '正常';
+
+  const metrics = w.metrics_cmp || [];
+  if (charts.weekly) charts.weekly.dispose();
+  charts.weekly = echarts.init(document.getElementById('chart_weekly_cmp'));
+  charts.weekly.setOption({
+    tooltip: { trigger:'axis' },
+    legend: { data:[w.weeks?.[1]||'本周', w.weeks?.[0]||'上周'], textStyle:{color:'#94a3b8'}, top:0 },
+    grid: { left:'3%', right:'4%', bottom:'3%', top:'12%', containLabel:true },
+    xAxis: { type:'category', data:metrics.map(i=>i.name), axisLine:{lineStyle:{color:'#475569'}}, axisLabel:{color:'#cbd5e1'} },
+    yAxis: { type:'value', axisLine:{lineStyle:{color:'#475569'}}, splitLine:{lineStyle:{color:'#1e293b'}}, axisLabel:{color:'#94a3b8'} },
+    series: [
+      { name:w.weeks?.[1]||'本周', type:'bar', data:metrics.map(i=>i.cur), itemStyle:{borderRadius:[4,4,0,0], color:'#2563eb'} },
+      { name:w.weeks?.[0]||'上周', type:'bar', data:metrics.map(i=>i.prev), itemStyle:{borderRadius:[4,4,0,0], color:'#475569'} }
+    ]
+  });
+
+  const wtb = document.querySelector('#table_w_anomaly tbody');
+  const anoms = w.anomaly_channels || [];
+  wtb.innerHTML = anoms.length ? anoms.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${fmtMoney(r.cur)}</td><td>${fmtMoney(r.prev)}</td>
+    <td class="${tagClass(r.delta)}">${(r.delta*100).toFixed(1)}%</td>
+    <td>${renderDiffBreakdown(r)}</td>
+    <td><span class="${tagClass(r.status, 'life')}">${r.status}</span></td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty-state">本周没有异常渠道（已过滤周付费<$100）</td></tr>';
+
+  const stb = document.querySelector('#table_w_server tbody');
+  const srvs = w.servers || [];
+  stb.innerHTML = srvs.length ? srvs.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${r.days ?? '-'}</td><td>${r.total_regs?.toLocaleString() ?? '-'}</td>
+    <td>${r.dau_cur ?? '-'}</td><td>${r.dau_prev ?? '-'}</td>
+    <td>${fmtMoney(r.pay_cur)}</td><td>${fmtMoney(r.pay_prev)}</td>
+    <td>${r.payers_cur ?? '-'}</td><td>${r.payers_prev ?? '-'}</td>
+    <td><span class="${tagClass(r.life, 'life')}">${r.life}</span></td></tr>`).join('')
+    : '<tr><td colspan="10" class="empty-state">暂无区服数据</td></tr>';
+
+  const ctb = document.querySelector('#table_w_churn tbody');
+  const churn = w.churn || [];
+  ctb.innerHTML = churn.length ? churn.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${r.ucid}</td><td>${r.channel}</td>
+    <td>${r.server}</td><td>${fmtMoney(r.total_pay)}</td>
+    <td><span class="tag yellow">${r.last_login_days}天前</span></td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty-state">暂无本周流失玩家（历史付费>$500，最后登录3-7天）</td></tr>';
+}
+
+function renderHistory(h) {
+  document.getElementById('pageSubTitle').textContent = '历史数据 | 区服+渠道累计';
+
+  const stb = document.querySelector('#table_h_server tbody');
+  const srvs = h.servers || [];
+  stb.innerHTML = srvs.length ? srvs.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${r.days}天</td><td>${r.regs?.toLocaleString()||'-'}</td>
+    <td>${fmtMoney(r.total_rev)}</td><td>${r.total_payers||'-'}</td>
+    <td>${fmtMoney(r.rev7)}</td><td>${r.active7?.toLocaleString()||'-'}</td><td>${r.payers7||'-'}</td></tr>`).join('')
+    : '<tr><td colspan="8" class="empty-state">暂无区服历史数据</td></tr>';
+
+  const ctb = document.querySelector('#table_h_channel tbody');
+  const chs = h.channels || [];
+  ctb.innerHTML = chs.length ? chs.map(r=>`
+    <tr><td><b>${r.name}</b></td><td>${r.days}天</td><td>${r.regs?.toLocaleString()||'-'}</td>
+    <td>${fmtMoney(r.total_rev)}</td><td>$${r.ltv?.toFixed(1)||'-'}</td>
+    <td><span class="${tagClass(r.status, 'status')}">${r.status}</span></td>
+    <td>${r.remain?.toLocaleString()??'-'}</td><td>${r.remain_pay != null ? r.remain_pay : '-'}</td></tr>`).join('')
+    : '<tr><td colspan="8" class="empty-state">暂无渠道历史数据</td></tr>';
+}
+
+function refreshActiveTab() {
+  const active = document.querySelector('.section.active').id;
+  if (active === 'daily') renderDaily(appData.daily);
+  else if (active === 'weekly') renderWeekly(appData.weekly);
+  else if (active === 'history') renderHistory(appData.history);
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.nav-btn').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  if (name==='daily') renderDaily(appData.daily);
+  else if (name==='weekly') renderWeekly(appData.weekly);
+  else if (name==='history') renderHistory(appData.history);
+}
+
+window.addEventListener('load', autoLoadData);
+window.addEventListener('resize', ()=>{
+  Object.values(charts).forEach(c=>c && c.resize());
+});
+</script>
+</body>
+</html>
