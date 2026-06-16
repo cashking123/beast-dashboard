@@ -5,31 +5,31 @@ const WEEKLY_DATA = {
       "06/06~06/12"
     ],
     "revenue": {
-      "cur": 43792.39,
-      "prev": 38018.0,
-      "delta": 0.1519
+      "cur": 44679.65,
+      "prev": 38739.7,
+      "delta": 0.1533
     },
     "register": {
-      "cur": 1952,
+      "cur": 1965,
       "prev": 1738,
-      "delta": 0.1231
+      "delta": 0.1306
     },
     "new_channels": 0,
-    "anomaly_count": 8,
+    "anomaly_count": 10,
     "metrics_cmp": [
       {
         "name": "DAU",
-        "cur": 1550,
+        "cur": 1551,
         "prev": 1425
       },
       {
         "name": "付费人数",
-        "cur": 187,
+        "cur": 188,
         "prev": 167
       },
       {
         "name": "新增付费",
-        "cur": 381,
+        "cur": 384,
         "prev": 381
       }
     ],
@@ -46,7 +46,7 @@ const WEEKLY_DATA = {
           "reg_drop": 0,
           "quality_drop": 0,
           "big_r_names": "cmdr.15004522: $395→$25(-$370), unknow: $482→$219(-$263), 21Epic: $156→$5(-$151)",
-          "churn_names": "无"
+          "churn_names": "21Epic"
         },
         "status": "正常"
       },
@@ -62,7 +62,7 @@ const WEEKLY_DATA = {
           "reg_drop": 0,
           "quality_drop": 0,
           "big_r_names": "10JC10: $1990→$100(-$1890), Bubble: $471→$94(-$377), TTim: $195→$28(-$166)",
-          "churn_names": "Excaliverr, cmdr.20005369, cmdr.17005950"
+          "churn_names": "cmdr.16011067, Colera, cmdr.14003231"
         },
         "status": "正常"
       },
@@ -78,15 +78,15 @@ const WEEKLY_DATA = {
           "reg_drop": 0,
           "quality_drop": 0,
           "big_r_names": "Morb: $242→$0(-$242), Izzy: $200→$0(-$200), cmdr.16005137: $180→$0(-$180)",
-          "churn_names": "Izzy, cmdr.16005137, Khey"
+          "churn_names": "Khey"
         },
         "status": "正常"
       },
       {
         "name": "在水一方_JUR",
-        "cur": 3575.25,
+        "cur": 3580.24,
         "prev": 5169.46,
-        "delta": -0.3084,
+        "delta": -0.3074,
         "reason_detail": {
           "type": "mixed",
           "big_r_stop": 1749.07,
@@ -110,9 +110,25 @@ const WEEKLY_DATA = {
           "reg_drop": 0,
           "quality_drop": 0,
           "big_r_names": "Dragon: $442→$0(-$442), cmdr.19009700: $85→$0(-$85)",
-          "churn_names": "Dragon"
+          "churn_names": "无"
         },
         "status": "正常"
+      },
+      {
+        "name": "我方用户",
+        "cur": 159.54,
+        "prev": 216.47,
+        "delta": -0.263,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 0,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "无",
+          "churn_names": "无"
+        },
+        "status": "已停量"
       },
       {
         "name": "天津简游发财_JUR",
@@ -126,9 +142,25 @@ const WEEKLY_DATA = {
           "reg_drop": 0,
           "quality_drop": 0,
           "big_r_names": "CeeJay: $380→$0(-$380), Anakin: $10→$0(-$10)",
-          "churn_names": "无"
+          "churn_names": "Anakin"
         },
         "status": "正常"
+      },
+      {
+        "name": "源昇（魔镜）",
+        "cur": 188.81,
+        "prev": 248.79,
+        "delta": -0.2411,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 0,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "无",
+          "churn_names": "无"
+        },
+        "status": "已停量"
       },
       {
         "name": "范思哲WH",
@@ -203,7 +235,7 @@ const WEEKLY_DATA = {
       {
         "name": "S14",
         "days": 109,
-        "total_regs": 1912,
+        "total_regs": 1913,
         "dau_cur": 29.0,
         "dau_prev": 34.3,
         "pay_cur": 3045.66,
@@ -239,7 +271,7 @@ const WEEKLY_DATA = {
       {
         "name": "S17",
         "days": 60,
-        "total_regs": 1546,
+        "total_regs": 1547,
         "dau_cur": 43.3,
         "dau_prev": 48.0,
         "pay_cur": 1738.21,
@@ -275,7 +307,7 @@ const WEEKLY_DATA = {
       {
         "name": "S20",
         "days": 39,
-        "total_regs": 1248,
+        "total_regs": 1249,
         "dau_cur": 53.6,
         "dau_prev": 71.3,
         "pay_cur": 2917.97,
@@ -299,8 +331,8 @@ const WEEKLY_DATA = {
       {
         "name": "S22",
         "days": 25,
-        "total_regs": 2011,
-        "dau_cur": 130.6,
+        "total_regs": 2015,
+        "dau_cur": 131.3,
         "dau_prev": 206.4,
         "pay_cur": 3633.43,
         "pay_prev": 4779.04,
@@ -315,7 +347,7 @@ const WEEKLY_DATA = {
         "dau_cur": 226.3,
         "dau_prev": 487.9,
         "pay_cur": 6657.09,
-        "pay_prev": 7612.93,
+        "pay_prev": 7607.94,
         "payers_cur": 29.3,
         "payers_prev": 58.6,
         "life": "[成长期]"
@@ -323,60 +355,56 @@ const WEEKLY_DATA = {
       {
         "name": "S24",
         "days": 11,
-        "total_regs": 2191,
-        "dau_cur": 510.3,
+        "total_regs": 2196,
+        "dau_cur": 511.1,
         "dau_prev": 302.3,
-        "pay_cur": 11685.19,
-        "pay_prev": 3712.59,
-        "payers_cur": 56.7,
+        "pay_cur": 11424.42,
+        "pay_prev": 3658.74,
+        "payers_cur": 57.1,
         "payers_prev": 34.6,
         "life": "[成长期]"
       },
       {
         "name": "S25",
         "days": 4,
-        "total_regs": 1791,
-        "dau_cur": 334.6,
+        "total_regs": 2218,
+        "dau_cur": 337.0,
         "dau_prev": 0.0,
-        "pay_cur": 4715.52,
+        "pay_cur": 4786.44,
         "pay_prev": 0.0,
-        "payers_cur": 34.6,
+        "payers_cur": 34.9,
+        "payers_prev": 0.0,
+        "life": "[新开服]"
+      },
+      {
+        "name": "S26",
+        "days": -3,
+        "total_regs": 7,
+        "dau_cur": 0.0,
+        "dau_prev": 0.0,
+        "pay_cur": 0.0,
+        "pay_prev": 0.0,
+        "payers_cur": 0.0,
         "payers_prev": 0.0,
         "life": "[新开服]"
       }
     ],
     "churn": [
       {
-        "name": "Excaliverr",
-        "ucid": "16020021009963",
-        "channel": "聚冠_JUR",
-        "server": "S21",
-        "total_pay": 530.54,
-        "last_login_days": 5
-      },
-      {
         "name": "LAWDAWG",
         "ucid": "16020021004111",
         "channel": "广亮_JUR",
         "server": "S21",
         "total_pay": 970.34,
+        "last_login_days": 5
+      },
+      {
+        "name": "21Epic",
+        "ucid": "16020021003323",
+        "channel": "长沙哈迪斯_JUR",
+        "server": "S21",
+        "total_pay": 702.46,
         "last_login_days": 3
-      },
-      {
-        "name": "cmdr.20005369",
-        "ucid": "16020020005369",
-        "channel": "聚冠_JUR",
-        "server": "S20",
-        "total_pay": 1275.12,
-        "last_login_days": 6
-      },
-      {
-        "name": "Jaws",
-        "ucid": "16020019005492",
-        "channel": "李航",
-        "server": "S19",
-        "total_pay": 1317.48,
-        "last_login_days": 4
       },
       {
         "name": "XXX",
@@ -384,15 +412,7 @@ const WEEKLY_DATA = {
         "channel": "厄洛斯",
         "server": "S17",
         "total_pay": 654.17,
-        "last_login_days": 4
-      },
-      {
-        "name": "cmdr.17005950",
-        "ucid": "16020017005950",
-        "channel": "聚冠_JUR",
-        "server": "S17",
-        "total_pay": 906.65,
-        "last_login_days": 6
+        "last_login_days": 5
       },
       {
         "name": "cmdr.17005701",
@@ -400,55 +420,47 @@ const WEEKLY_DATA = {
         "channel": "RS_JUR",
         "server": "S17",
         "total_pay": 655.12,
-        "last_login_days": 4
-      },
-      {
-        "name": "MJS",
-        "ucid": "16020016008215",
-        "channel": "厄洛斯",
-        "server": "S16",
-        "total_pay": 1180.53,
-        "last_login_days": 6
-      },
-      {
-        "name": "Izzy",
-        "ucid": "16020016008095",
-        "channel": "广州昊天游_JUR",
-        "server": "S16",
-        "total_pay": 2241.4,
-        "last_login_days": 3
-      },
-      {
-        "name": "cmdr.16005137",
-        "ucid": "16020016005137",
-        "channel": "广州昊天游_JUR",
-        "server": "S16",
-        "total_pay": 545.84,
-        "last_login_days": 4
-      },
-      {
-        "name": "cmdr.15013471",
-        "ucid": "16020015013471",
-        "channel": "厄洛斯",
-        "server": "S15",
-        "total_pay": 6792.28,
-        "last_login_days": 3
-      },
-      {
-        "name": "Dragon",
-        "ucid": "16020015006007",
-        "channel": "西安玩趣发财_JUR ",
-        "server": "S15",
-        "total_pay": 11105.91,
-        "last_login_days": 6
-      },
-      {
-        "name": "cmdr.15004207",
-        "ucid": "16020015004207",
-        "channel": "发财团队_JUR",
-        "server": "S15",
-        "total_pay": 5518.59,
         "last_login_days": 5
+      },
+      {
+        "name": "ClIx",
+        "ucid": "16020017003303",
+        "channel": "郑州未界发财_JUR",
+        "server": "S17",
+        "total_pay": 4085.53,
+        "last_login_days": 4
+      },
+      {
+        "name": "Anakin",
+        "ucid": "16020016011136",
+        "channel": "天津简游发财_JUR",
+        "server": "S16",
+        "total_pay": 1409.07,
+        "last_login_days": 3
+      },
+      {
+        "name": "cmdr.16011067",
+        "ucid": "16020016011067",
+        "channel": "聚冠_JUR",
+        "server": "S16",
+        "total_pay": 785.94,
+        "last_login_days": 3
+      },
+      {
+        "name": "Colera",
+        "ucid": "16020015010527",
+        "channel": "聚冠_JUR",
+        "server": "S15",
+        "total_pay": 1041.23,
+        "last_login_days": 4
+      },
+      {
+        "name": "hueS",
+        "ucid": "16020015009600",
+        "channel": "厄洛斯",
+        "server": "S15",
+        "total_pay": 2244.88,
+        "last_login_days": 3
       },
       {
         "name": "Khey",
@@ -456,14 +468,14 @@ const WEEKLY_DATA = {
         "channel": "广州昊天游_JUR",
         "server": "S15",
         "total_pay": 3075.31,
-        "last_login_days": 3
+        "last_login_days": 5
       },
       {
-        "name": "SolarX",
-        "ucid": "16020014010963",
-        "channel": "厄洛斯",
+        "name": "cmdr.14003231",
+        "ucid": "16020014003231",
+        "channel": "聚冠_JUR",
         "server": "S14",
-        "total_pay": 678.49,
+        "total_pay": 1272.17,
         "last_login_days": 3
       }
     ]
