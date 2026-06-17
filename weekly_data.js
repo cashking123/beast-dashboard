@@ -5,17 +5,17 @@ const WEEKLY_DATA = {
       "06/06~06/12"
     ],
     "revenue": {
-      "cur": 44679.65,
-      "prev": 38739.7,
-      "delta": 0.1533
+      "cur": 43610.51,
+      "prev": 37958.17,
+      "delta": 0.1489
     },
     "register": {
-      "cur": 1965,
+      "cur": 1968,
       "prev": 1738,
-      "delta": 0.1306
+      "delta": 0.1323
     },
     "new_channels": 0,
-    "anomaly_count": 10,
+    "anomaly_count": 8,
     "metrics_cmp": [
       {
         "name": "DAU",
@@ -29,7 +29,7 @@ const WEEKLY_DATA = {
       },
       {
         "name": "新增付费",
-        "cur": 384,
+        "cur": 385,
         "prev": 381
       }
     ],
@@ -115,22 +115,6 @@ const WEEKLY_DATA = {
         "status": "正常"
       },
       {
-        "name": "我方用户",
-        "cur": 159.54,
-        "prev": 216.47,
-        "delta": -0.263,
-        "reason_detail": {
-          "type": "mixed",
-          "big_r_stop": 0,
-          "big_r_churn": 0,
-          "reg_drop": 0,
-          "quality_drop": 0,
-          "big_r_names": "无",
-          "churn_names": "无"
-        },
-        "status": "已停量"
-      },
-      {
         "name": "天津简游发财_JUR",
         "cur": 425.12,
         "prev": 564.73,
@@ -145,22 +129,6 @@ const WEEKLY_DATA = {
           "churn_names": "Anakin"
         },
         "status": "正常"
-      },
-      {
-        "name": "源昇（魔镜）",
-        "cur": 188.81,
-        "prev": 248.79,
-        "delta": -0.2411,
-        "reason_detail": {
-          "type": "mixed",
-          "big_r_stop": 0,
-          "big_r_churn": 0,
-          "reg_drop": 0,
-          "quality_drop": 0,
-          "big_r_names": "无",
-          "churn_names": "无"
-        },
-        "status": "已停量"
       },
       {
         "name": "范思哲WH",
@@ -211,7 +179,7 @@ const WEEKLY_DATA = {
       {
         "name": "S12",
         "days": 157,
-        "total_regs": 1694,
+        "total_regs": 1695,
         "dau_cur": 0.0,
         "dau_prev": 0.0,
         "pay_cur": 620.72,
@@ -247,7 +215,7 @@ const WEEKLY_DATA = {
       {
         "name": "S15",
         "days": 81,
-        "total_regs": 2247,
+        "total_regs": 2248,
         "dau_cur": 38.9,
         "dau_prev": 46.9,
         "pay_cur": 2045.9,
@@ -319,7 +287,7 @@ const WEEKLY_DATA = {
       {
         "name": "S21",
         "days": 32,
-        "total_regs": 1555,
+        "total_regs": 1557,
         "dau_cur": 72.7,
         "dau_prev": 95.4,
         "pay_cur": 3430.41,
@@ -355,11 +323,11 @@ const WEEKLY_DATA = {
       {
         "name": "S24",
         "days": 11,
-        "total_regs": 2196,
+        "total_regs": 2200,
         "dau_cur": 511.1,
         "dau_prev": 302.3,
         "pay_cur": 11424.42,
-        "pay_prev": 3658.74,
+        "pay_prev": 3657.75,
         "payers_cur": 57.1,
         "payers_prev": 34.6,
         "life": "[成长期]"
@@ -367,19 +335,19 @@ const WEEKLY_DATA = {
       {
         "name": "S25",
         "days": 4,
-        "total_regs": 2218,
-        "dau_cur": 337.0,
+        "total_regs": 2262,
+        "dau_cur": 337.9,
         "dau_prev": 0.0,
-        "pay_cur": 4786.44,
+        "pay_cur": 4794.41,
         "pay_prev": 0.0,
-        "payers_cur": 34.9,
+        "payers_cur": 35.0,
         "payers_prev": 0.0,
         "life": "[新开服]"
       },
       {
         "name": "S26",
         "days": -3,
-        "total_regs": 7,
+        "total_regs": 298,
         "dau_cur": 0.0,
         "dau_prev": 0.0,
         "pay_cur": 0.0,
@@ -396,7 +364,7 @@ const WEEKLY_DATA = {
         "channel": "广亮_JUR",
         "server": "S21",
         "total_pay": 970.34,
-        "last_login_days": 5
+        "last_login_days": 6
       },
       {
         "name": "21Epic",
@@ -404,7 +372,7 @@ const WEEKLY_DATA = {
         "channel": "长沙哈迪斯_JUR",
         "server": "S21",
         "total_pay": 702.46,
-        "last_login_days": 3
+        "last_login_days": 4
       },
       {
         "name": "XXX",
@@ -412,7 +380,7 @@ const WEEKLY_DATA = {
         "channel": "厄洛斯",
         "server": "S17",
         "total_pay": 654.17,
-        "last_login_days": 5
+        "last_login_days": 6
       },
       {
         "name": "cmdr.17005701",
@@ -420,7 +388,7 @@ const WEEKLY_DATA = {
         "channel": "RS_JUR",
         "server": "S17",
         "total_pay": 655.12,
-        "last_login_days": 5
+        "last_login_days": 6
       },
       {
         "name": "ClIx",
@@ -428,7 +396,7 @@ const WEEKLY_DATA = {
         "channel": "郑州未界发财_JUR",
         "server": "S17",
         "total_pay": 4085.53,
-        "last_login_days": 4
+        "last_login_days": 5
       },
       {
         "name": "Anakin",
@@ -436,7 +404,7 @@ const WEEKLY_DATA = {
         "channel": "天津简游发财_JUR",
         "server": "S16",
         "total_pay": 1409.07,
-        "last_login_days": 3
+        "last_login_days": 4
       },
       {
         "name": "cmdr.16011067",
@@ -444,7 +412,7 @@ const WEEKLY_DATA = {
         "channel": "聚冠_JUR",
         "server": "S16",
         "total_pay": 785.94,
-        "last_login_days": 3
+        "last_login_days": 4
       },
       {
         "name": "Colera",
@@ -452,15 +420,7 @@ const WEEKLY_DATA = {
         "channel": "聚冠_JUR",
         "server": "S15",
         "total_pay": 1041.23,
-        "last_login_days": 4
-      },
-      {
-        "name": "hueS",
-        "ucid": "16020015009600",
-        "channel": "厄洛斯",
-        "server": "S15",
-        "total_pay": 2244.88,
-        "last_login_days": 3
+        "last_login_days": 5
       },
       {
         "name": "Khey",
@@ -468,7 +428,7 @@ const WEEKLY_DATA = {
         "channel": "广州昊天游_JUR",
         "server": "S15",
         "total_pay": 3075.31,
-        "last_login_days": 5
+        "last_login_days": 6
       },
       {
         "name": "cmdr.14003231",
@@ -476,7 +436,7 @@ const WEEKLY_DATA = {
         "channel": "聚冠_JUR",
         "server": "S14",
         "total_pay": 1272.17,
-        "last_login_days": 3
+        "last_login_days": 4
       }
     ]
   }
