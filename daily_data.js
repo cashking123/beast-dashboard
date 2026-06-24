@@ -1,120 +1,202 @@
 const DAILY_DATA = {
   "daily": {
-    "date": "2026-06-22",
+    "date": "2026-06-23",
     "revenue": {
-      "yesterday": 7585.62,
-      "day_before": 3923.21,
-      "delta": 0.9335,
-      "avg7": 6802.4,
-      "avg30": 5901.93
+      "yesterday": 4108.83,
+      "day_before": 7585.62,
+      "delta": -0.4583,
+      "avg7": 6883.43,
+      "avg30": 5973.45
     },
     "register": {
-      "yesterday": 336,
-      "day_before": 150,
-      "delta": 1.24,
-      "avg7": 256,
-      "avg30": 294
+      "yesterday": 360,
+      "day_before": 364,
+      "delta": -0.011,
+      "avg7": 260,
+      "avg30": 297
     },
     "new_payers": {
-      "yesterday": 40,
-      "day_before": 27,
-      "delta": 0.4815,
-      "avg7": 44,
-      "avg30": 53
+      "yesterday": 44,
+      "day_before": 40,
+      "delta": 0.1,
+      "avg7": 42,
+      "avg30": 52
     },
     "new_pay_rate": {
-      "yesterday": 0.119,
-      "day_before": 0.18,
-      "delta": -0.061,
-      "avg7": 0.1748,
-      "avg30": 0.2125
+      "yesterday": 0.1222,
+      "day_before": 0.1099,
+      "delta": 0.0123,
+      "avg7": 0.1668,
+      "avg30": 0.208
     },
-    "summary": "营收异常(+93.4%)；注册异常(+124.0%)；新增付费异常(+48.1%)",
+    "summary": "营收异常(-45.8%)；注册正常(-1.1%)；新增付费正常(+10.0%)",
     "channel_rev": [
       {
         "name": "梵克雅宝",
-        "val": 2725.49
+        "val": 1143.54
+      },
+      {
+        "name": "聚冠_JUR",
+        "val": 1043.83
+      },
+      {
+        "name": "精聊發發發团队",
+        "val": 280.75
       },
       {
         "name": "厄洛斯",
-        "val": 1230.55
+        "val": 274.6
       },
       {
         "name": "李航",
-        "val": 848.98
-      },
-      {
-        "name": "在水一方_JUR",
-        "val": 733.52
-      },
-      {
-        "name": "弑神阁",
-        "val": 616.96
+        "val": 263.63
       }
     ],
     "channel_reg_top5": [
       {
-        "name": "聚冠_JUR",
-        "val": 45
+        "name": "梵克雅宝",
+        "val": 47
       },
       {
-        "name": "梵克雅宝",
-        "val": 44
+        "name": "聚冠_JUR",
+        "val": 46
+      },
+      {
+        "name": "郑州未界发财_JUR",
+        "val": 28
       },
       {
         "name": "殿堂网络_JUR",
-        "val": 24
+        "val": 28
       },
       {
-        "name": "弑神阁",
-        "val": 22
-      },
-      {
-        "name": "李航",
-        "val": 21
+        "name": "新郑乐牛发财_JUR",
+        "val": 27
       }
     ],
     "anomaly_channels": [
       {
-        "name": "聚冠_JUR",
-        "yest": 190.8,
-        "before": 1082.8,
-        "delta": -0.8238,
+        "name": "厄洛斯",
+        "yest": 274.6,
+        "before": 1230.55,
+        "delta": -0.7768,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 972.96,
+          "big_r_stop": 1062.78,
           "big_r_churn": 0,
           "reg_drop": 0,
-          "quality_drop": 763.2,
-          "big_r_names": "10JC10: $955→$0(-$955), Cody: $18→$0(-$18)",
-          "churn_names": "Shade0, cmdr.17005950, Doggy"
+          "quality_drop": 713.96,
+          "big_r_names": "Slays: $462→$0(-$462), Caulk: $359→$0(-$359), cmdr.14021678: $274→$48(-$226)",
+          "churn_names": "DMOGKarmaX, hueS, JunNyx"
+        }
+      },
+      {
+        "name": "在水一方_JUR",
+        "yest": 193.83,
+        "before": 733.52,
+        "delta": -0.7358,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 536.71,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "MoeLester: $555→$100(-$455), dutchie: $31→$3(-$28), cmdr.22008939: $24→$0(-$24)",
+          "churn_names": "无"
+        }
+      },
+      {
+        "name": "李航",
+        "yest": 263.63,
+        "before": 848.98,
+        "delta": -0.6895,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 485.3,
+          "big_r_churn": 0,
+          "reg_drop": 83.69,
+          "quality_drop": 4.18,
+          "big_r_names": "LightRuler: $299→$77(-$222), Danno: $199→$6(-$193), Sugar: $50→$0(-$50)",
+          "churn_names": "无"
+        }
+      },
+      {
+        "name": "梵克雅宝",
+        "yest": 1143.54,
+        "before": 2725.49,
+        "delta": -0.5804,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 2113.7,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "Temizuchi: $897→$0(-$897), Weiii05: $800→$0(-$800), cmdr.23008558: $765→$500(-$265)",
+          "churn_names": "南辞"
+        }
+      },
+      {
+        "name": "雅典娜",
+        "yest": 116.8,
+        "before": 188.89,
+        "delta": -0.3817,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 99.99,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 210.24,
+          "big_r_names": "cmdr.23005794: $100→$0(-$100)",
+          "churn_names": "无"
         }
       }
     ],
     "reg_anomaly_channels": [
       {
-        "name": "长沙万氪_JUR",
-        "yest": 5,
-        "before": 15,
-        "delta": -0.6667,
+        "name": "克罗心SX",
+        "yest": 11,
+        "before": 20,
+        "delta": -0.45,
         "reason": "量跌"
       },
       {
-        "name": "厄洛斯",
-        "yest": 9,
+        "name": "西安玩趣发财_JUR",
+        "yest": 8,
+        "before": 14,
+        "delta": -0.4286,
+        "reason": "量跌"
+      },
+      {
+        "name": "卡地亚巨兽",
+        "yest": 8,
         "before": 11,
-        "delta": -0.1818,
+        "delta": -0.2727,
+        "reason": "量跌"
+      },
+      {
+        "name": "李航",
+        "yest": 16,
+        "before": 21,
+        "delta": -0.2381,
         "reason": "量跌"
       }
     ],
     "churn_alert": [
+      {
+        "name": "DMOGKarmaX",
+        "ucid": "16020026003381",
+        "channel": "厄洛斯",
+        "server": "S26",
+        "total_pay": 735.77,
+        "last_login_days": 3
+      },
       {
         "name": "cmdr.25003234",
         "ucid": "16020025003234",
         "channel": "郑州未界发财_JUR",
         "server": "S25",
         "total_pay": 930.38,
-        "last_login_days": 4
+        "last_login_days": 5
       },
       {
         "name": "南辞",
@@ -122,39 +204,15 @@ const DAILY_DATA = {
         "channel": "梵克雅宝",
         "server": "S24",
         "total_pay": 1077.95,
+        "last_login_days": 4
+      },
+      {
+        "name": "Prince",
+        "ucid": "16020022007549",
+        "channel": "发财团队_JUR",
+        "server": "S22",
+        "total_pay": 782.92,
         "last_login_days": 3
-      },
-      {
-        "name": "cmdr.18010155",
-        "ucid": "16020018010155",
-        "channel": "厄洛斯",
-        "server": "S18",
-        "total_pay": 500.96,
-        "last_login_days": 5
-      },
-      {
-        "name": "Morb",
-        "ucid": "16020017010825",
-        "channel": "广州昊天游_JUR",
-        "server": "S17",
-        "total_pay": 1677.9,
-        "last_login_days": 3
-      },
-      {
-        "name": "Shade0",
-        "ucid": "16020017007033",
-        "channel": "聚冠_JUR",
-        "server": "S17",
-        "total_pay": 1635.3,
-        "last_login_days": 6
-      },
-      {
-        "name": "cmdr.17005950",
-        "ucid": "16020017005950",
-        "channel": "聚冠_JUR",
-        "server": "S17",
-        "total_pay": 906.65,
-        "last_login_days": 6
       },
       {
         "name": "ClIx",
@@ -162,7 +220,7 @@ const DAILY_DATA = {
         "channel": "郑州未界发财_JUR",
         "server": "S17",
         "total_pay": 4465.52,
-        "last_login_days": 5
+        "last_login_days": 6
       },
       {
         "name": "hueS",
@@ -170,7 +228,15 @@ const DAILY_DATA = {
         "channel": "厄洛斯",
         "server": "S15",
         "total_pay": 2244.88,
-        "last_login_days": 5
+        "last_login_days": 6
+      },
+      {
+        "name": "cmdr.15006332",
+        "ucid": "16020015006332",
+        "channel": "发财团队_JUR",
+        "server": "S15",
+        "total_pay": 2105.74,
+        "last_login_days": 3
       },
       {
         "name": "RedGen",
@@ -178,7 +244,7 @@ const DAILY_DATA = {
         "channel": "郑州未界发财_JUR",
         "server": "S15",
         "total_pay": 885.85,
-        "last_login_days": 4
+        "last_login_days": 6
       },
       {
         "name": "JunNyx",
@@ -186,7 +252,7 @@ const DAILY_DATA = {
         "channel": "厄洛斯",
         "server": "S15",
         "total_pay": 8564.41,
-        "last_login_days": 3
+        "last_login_days": 4
       },
       {
         "name": "Doggy",
@@ -194,144 +260,128 @@ const DAILY_DATA = {
         "channel": "聚冠_JUR",
         "server": "S15",
         "total_pay": 761.78,
-        "last_login_days": 5
-      },
-      {
-        "name": "Jeeves",
-        "ucid": "16020015004228",
-        "channel": "广州昊天游_JUR",
-        "server": "S15",
-        "total_pay": 824.02,
-        "last_login_days": 6
-      },
-      {
-        "name": "SolarX",
-        "ucid": "16020014010963",
-        "channel": "厄洛斯",
-        "server": "S14",
-        "total_pay": 678.49,
         "last_login_days": 6
       }
     ],
     "server_rev": [
       {
         "name": "S11",
-        "yest": 109.97,
-        "before": 964.96,
-        "delta": -0.886,
-        "days": 187
+        "yest": 958.98,
+        "before": 109.97,
+        "delta": 7.7204,
+        "days": 188
       },
       {
         "name": "S12",
-        "yest": 258.47,
-        "before": 0.0,
-        "delta": 0.0,
-        "days": 167
+        "yest": 4.99,
+        "before": 258.47,
+        "delta": -0.9807,
+        "days": 168
       },
       {
         "name": "S13",
-        "yest": 461.94,
-        "before": 0.0,
-        "delta": 0.0,
-        "days": 153
+        "yest": 0.0,
+        "before": 461.94,
+        "delta": -1.0,
+        "days": 154
       },
       {
         "name": "S14",
-        "yest": 667.77,
-        "before": 299.39,
-        "delta": 1.2304,
-        "days": 119
+        "yest": 75.92,
+        "before": 667.77,
+        "delta": -0.8863,
+        "days": 120
       },
       {
         "name": "S15",
-        "yest": 4.99,
-        "before": 109.97,
-        "delta": -0.9546,
-        "days": 91
+        "yest": 0.99,
+        "before": 4.99,
+        "delta": -0.8016,
+        "days": 92
       },
       {
         "name": "S16",
-        "yest": 78.9,
-        "before": 53.84,
-        "delta": 0.4655,
-        "days": 77
+        "yest": 111.84,
+        "before": 78.9,
+        "delta": 0.4175,
+        "days": 78
       },
       {
         "name": "S17",
-        "yest": 254.82,
-        "before": 5.98,
-        "delta": 41.612,
-        "days": 70
+        "yest": 26.93,
+        "before": 254.82,
+        "delta": -0.8943,
+        "days": 71
       },
       {
         "name": "S18",
-        "yest": 106.27,
-        "before": 46.93,
-        "delta": 1.2644,
-        "days": 63
+        "yest": 23.95,
+        "before": 106.27,
+        "delta": -0.7746,
+        "days": 64
       },
       {
         "name": "S19",
-        "yest": 51.06,
-        "before": 0.0,
-        "delta": 0.0,
-        "days": 56
+        "yest": 41.94,
+        "before": 51.06,
+        "delta": -0.1786,
+        "days": 57
       },
       {
         "name": "S20",
-        "yest": 569.55,
-        "before": 188.83,
-        "delta": 2.0162,
-        "days": 49
+        "yest": 172.69,
+        "before": 569.55,
+        "delta": -0.6968,
+        "days": 50
       },
       {
         "name": "S21",
-        "yest": 85.87,
-        "before": 201.75,
-        "delta": -0.5744,
-        "days": 42
+        "yest": 22.94,
+        "before": 85.87,
+        "delta": -0.7329,
+        "days": 43
       },
       {
         "name": "S22",
-        "yest": 64.83,
-        "before": 78.83,
-        "delta": -0.1776,
-        "days": 35
+        "yest": 29.92,
+        "before": 64.83,
+        "delta": -0.5385,
+        "days": 36
       },
       {
         "name": "S23",
-        "yest": 1840.08,
-        "before": 331.51,
-        "delta": 4.5506,
-        "days": 28
+        "yest": 865.83,
+        "before": 1840.08,
+        "delta": -0.5295,
+        "days": 29
       },
       {
         "name": "S24",
-        "yest": 332.75,
-        "before": 169.21,
-        "delta": 0.9665,
-        "days": 21
+        "yest": 260.59,
+        "before": 332.75,
+        "delta": -0.2169,
+        "days": 22
       },
       {
         "name": "S25",
-        "yest": 2120.4,
-        "before": 354.46,
-        "delta": 4.9821,
-        "days": 14
+        "yest": 641.25,
+        "before": 2120.4,
+        "delta": -0.6976,
+        "days": 15
       },
       {
         "name": "S26",
-        "yest": 577.95,
-        "before": 1107.57,
-        "delta": -0.4782,
-        "days": 7
+        "yest": 497.72,
+        "before": 577.95,
+        "delta": -0.1388,
+        "days": 8
       },
       {
         "name": "S27",
-        "yest": NaN,
-        "before": NaN,
-        "delta": 0,
-        "days": 0
+        "yest": 372.35,
+        "before": 0.0,
+        "delta": 0.0,
+        "days": 1
       }
     ]
   }
