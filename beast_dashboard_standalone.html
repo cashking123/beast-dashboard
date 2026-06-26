@@ -157,27 +157,27 @@ const DAILY_DATA = {
       "avg30": 5975.33
     },
     "register": {
-      "yesterday": 268,
-      "day_before": 314,
-      "delta": -0.1465,
-      "avg7": 222,
-      "avg30": 52
+      "yesterday": 279,
+      "day_before": 316,
+      "delta": -0.1171,
+      "avg7": 266,
+      "avg30": 308
     },
     "new_payers": {
-      "yesterday": 47,
-      "day_before": 40,
-      "delta": 0.175,
-      "avg7": 23,
-      "avg30": 5
+      "yesterday": 55,
+      "day_before": 46,
+      "delta": 0.1957,
+      "avg7": 39,
+      "avg30": 53
     },
     "new_pay_rate": {
-      "yesterday": 0.1754,
-      "day_before": 0.1274,
-      "delta": 0.048,
-      "avg7": 0.0867,
-      "avg30": 0.0202
+      "yesterday": 0.1971,
+      "day_before": 0.1456,
+      "delta": 0.0516,
+      "avg7": 0.154,
+      "avg30": 0.1978
     },
-    "summary": "营收异常(+22.1%)；注册正常(-14.6%)；新增付费异常(+17.5%)",
+    "summary": "营收异常(+22.1%)；注册正常(-11.7%)；新增付费异常(+19.6%)",
     "channel_rev": [
       {
         "name": "在水一方_JUR",
@@ -210,16 +210,16 @@ const DAILY_DATA = {
         "val": 33
       },
       {
+        "name": "新郑乐牛发财_JUR",
+        "val": 22
+      },
+      {
         "name": "雅典娜",
         "val": 21
       },
       {
-        "name": "新郑乐牛发财_JUR",
-        "val": 18
-      },
-      {
         "name": "弑神阁",
-        "val": 18
+        "val": 19
       }
     ],
     "anomaly_channels": [
@@ -230,11 +230,11 @@ const DAILY_DATA = {
         "delta": -0.5432,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 0,
+          "big_r_stop": 879.77,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 694.29,
-          "big_r_names": "无",
+          "big_r_names": "Weiii05: $558→$20(-$538), cmdr.23008558: $200→$0(-$200), SLeonheart: $104→$0(-$104)",
           "churn_names": "无"
         }
       },
@@ -245,11 +245,11 @@ const DAILY_DATA = {
         "delta": -0.4958,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 0,
+          "big_r_stop": 311.15,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 0,
-          "big_r_names": "无",
+          "big_r_names": "SirRat: $311→$0(-$311)",
           "churn_names": "无"
         }
       },
@@ -260,12 +260,12 @@ const DAILY_DATA = {
         "delta": -0.338,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 0,
+          "big_r_stop": 382.99,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 0,
-          "big_r_names": "无",
-          "churn_names": "无"
+          "big_r_names": "Sleepy: $360→$95(-$265), Caleb1437: $199→$81(-$118)",
+          "churn_names": "Meru"
         }
       },
       {
@@ -275,11 +275,11 @@ const DAILY_DATA = {
         "delta": -0.3369,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 0,
+          "big_r_stop": 159.98,
           "big_r_churn": 0,
           "reg_drop": 284.02,
           "quality_drop": 148.77,
-          "big_r_names": "无",
+          "big_r_names": "Goodamac: $337→$177(-$160)",
           "churn_names": "无"
         }
       },
@@ -290,16 +290,23 @@ const DAILY_DATA = {
         "delta": -0.2722,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 0,
+          "big_r_stop": 81.51,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 0,
-          "big_r_names": "无",
+          "big_r_names": "Soup: $190→$108(-$82)",
           "churn_names": "无"
         }
       }
     ],
     "reg_anomaly_channels": [
+      {
+        "name": "广亮_JUR",
+        "yest": 5,
+        "before": 13,
+        "delta": -0.6154,
+        "reason": "量跌"
+      },
       {
         "name": "香奈儿GD",
         "yest": 11,
@@ -315,13 +322,6 @@ const DAILY_DATA = {
         "reason": "量跌"
       },
       {
-        "name": "李航",
-        "yest": 14,
-        "before": 23,
-        "delta": -0.3913,
-        "reason": "量跌"
-      },
-      {
         "name": "潘多拉",
         "yest": 5,
         "before": 8,
@@ -333,6 +333,13 @@ const DAILY_DATA = {
         "yest": 12,
         "before": 19,
         "delta": -0.3684,
+        "reason": "量跌"
+      },
+      {
+        "name": "李航",
+        "yest": 16,
+        "before": 23,
+        "delta": -0.3043,
         "reason": "量跌"
       },
       {
@@ -351,125 +358,214 @@ const DAILY_DATA = {
       },
       {
         "name": "弑神阁",
-        "yest": 18,
+        "yest": 19,
         "before": 23,
-        "delta": -0.2174,
+        "delta": -0.1739,
         "reason": "量跌"
       }
     ],
-    "churn_alert": [],
+    "churn_alert": [
+      {
+        "name": "DMOGKarmaX",
+        "ucid": "16020026003381",
+        "channel": "厄洛斯",
+        "server": "S26",
+        "total_pay": 735.77,
+        "last_login_days": 5
+      },
+      {
+        "name": "Prince",
+        "ucid": "16020022007549",
+        "channel": "发财团队_JUR",
+        "server": "S22",
+        "total_pay": 782.92,
+        "last_login_days": 6
+      },
+      {
+        "name": "Putte",
+        "ucid": "16020019005265",
+        "channel": "厄洛斯",
+        "server": "S19",
+        "total_pay": 615.46,
+        "last_login_days": 3
+      },
+      {
+        "name": "cmdr.18010155",
+        "ucid": "16020018010155",
+        "channel": "厄洛斯",
+        "server": "S18",
+        "total_pay": 500.96,
+        "last_login_days": 3
+      },
+      {
+        "name": "Morb",
+        "ucid": "16020017010825",
+        "channel": "广州昊天游_JUR",
+        "server": "S17",
+        "total_pay": 1677.9,
+        "last_login_days": 3
+      },
+      {
+        "name": "Shade0",
+        "ucid": "16020017007033",
+        "channel": "聚冠_JUR",
+        "server": "S17",
+        "total_pay": 1635.3,
+        "last_login_days": 3
+      },
+      {
+        "name": "cmdr.16011067",
+        "ucid": "16020016011067",
+        "channel": "聚冠_JUR",
+        "server": "S16",
+        "total_pay": 785.94,
+        "last_login_days": 3
+      },
+      {
+        "name": "SiThe",
+        "ucid": "16020016009669",
+        "channel": "君临天下",
+        "server": "S16",
+        "total_pay": 3487.08,
+        "last_login_days": 4
+      },
+      {
+        "name": "Izzy",
+        "ucid": "16020016008095",
+        "channel": "广州昊天游_JUR",
+        "server": "S16",
+        "total_pay": 2241.4,
+        "last_login_days": 4
+      },
+      {
+        "name": "Meru",
+        "ucid": "16020015017913",
+        "channel": "新郑乐牛发财_JUR",
+        "server": "S15",
+        "total_pay": 720.05,
+        "last_login_days": 3
+      },
+      {
+        "name": "JunNyx",
+        "ucid": "16020015004499",
+        "channel": "厄洛斯",
+        "server": "S15",
+        "total_pay": 8564.41,
+        "last_login_days": 6
+      }
+    ],
     "server_rev": [
       {
         "name": "S11",
         "yest": 9.99,
         "before": 3.98,
         "delta": 1.5101,
-        "days": 6
+        "days": 190
       },
       {
         "name": "S12",
         "yest": 0.0,
         "before": 9.99,
         "delta": -1.0,
-        "days": 2
+        "days": 170
       },
       {
         "name": "S13",
         "yest": 0.0,
         "before": 47.49,
         "delta": -1.0,
-        "days": 0
+        "days": 156
       },
       {
         "name": "S14",
         "yest": 100.84,
         "before": 303.83,
         "delta": -0.6681,
-        "days": 2
+        "days": 122
       },
       {
         "name": "S15",
         "yest": 98.93,
         "before": 311.15,
         "delta": -0.6821,
-        "days": 1
+        "days": 94
       },
       {
         "name": "S16",
         "yest": 83.92,
         "before": 76.89,
         "delta": 0.0914,
-        "days": 7
+        "days": 80
       },
       {
         "name": "S17",
         "yest": 23.94,
         "before": 98.65,
         "delta": -0.7573,
-        "days": 3
+        "days": 73
       },
       {
         "name": "S18",
         "yest": 197.06,
         "before": 161.52,
         "delta": 0.22,
-        "days": 6
+        "days": 66
       },
       {
         "name": "S19",
         "yest": 14.97,
         "before": 26.96,
         "delta": -0.4447,
-        "days": 0
+        "days": 59
       },
       {
         "name": "S20",
         "yest": 1248.13,
         "before": 443.86,
         "delta": 1.812,
-        "days": 7
+        "days": 52
       },
       {
         "name": "S21",
         "yest": 1223.57,
         "before": 341.41,
         "delta": 2.5839,
-        "days": 7
+        "days": 45
       },
       {
         "name": "S22",
         "yest": 250.22,
         "before": 213.71,
         "delta": 0.1708,
-        "days": 1
+        "days": 38
       },
       {
         "name": "S23",
         "yest": 630.02,
         "before": 1096.73,
         "delta": -0.4255,
-        "days": 6
+        "days": 31
       },
       {
         "name": "S24",
         "yest": 582.19,
         "before": 568.6,
         "delta": 0.0239,
-        "days": 6
+        "days": 24
       },
       {
         "name": "S25",
         "yest": 1101.58,
         "before": 869.2,
         "delta": 0.2673,
-        "days": 7
+        "days": 17
       },
       {
         "name": "S26",
         "yest": 739.2,
         "before": 640.28,
         "delta": 0.1545,
-        "days": 7
+        "days": 10
       },
       {
         "name": "S27",
@@ -488,79 +584,63 @@ const WEEKLY_DATA = {
       "06/19~06/21"
     ],
     "revenue": {
-      "cur": 14515.95,
-      "prev": 14392.11,
-      "delta": 0.0086
+      "cur": 14516.94,
+      "prev": 17343.95,
+      "delta": -0.163
     },
     "register": {
-      "cur": 321,
-      "prev": 724,
-      "delta": -0.5566
+      "cur": 326,
+      "prev": 756,
+      "delta": -0.5688
     },
     "new_channels": 0,
-    "anomaly_count": 5,
+    "anomaly_count": 8,
     "metrics_cmp": [
       {
         "name": "DAU",
         "cur": 1460,
-        "prev": 1648
+        "prev": 1659
       },
       {
         "name": "付费人数",
-        "cur": 140,
-        "prev": 145
+        "cur": 141,
+        "prev": 148
       },
       {
         "name": "新增付费",
-        "cur": 88,
-        "prev": 84
+        "cur": 89,
+        "prev": 132
       }
     ],
     "anomaly_channels": [
       {
-        "name": "梵克雅宝",
-        "cur": 1475.72,
-        "prev": 4892.04,
-        "delta": -0.6983,
-        "reason_detail": {
-          "type": "mixed",
-          "big_r_stop": 4008.54,
-          "big_r_churn": 0,
-          "reg_drop": 0,
-          "quality_drop": 0,
-          "big_r_names": "cmdr.23008558: $1465→$100(-$1365), Weiii05: $1338→$0(-$1338), Temizuchi: $897→$0(-$897)",
-          "churn_names": "南辞"
-        },
-        "status": "正常"
-      },
-      {
         "name": "弑神阁",
         "cur": 226.81,
-        "prev": 705.09,
-        "delta": -0.6783,
+        "prev": 957.53,
+        "delta": -0.7631,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 579.99,
+          "big_r_stop": 0,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 0,
-          "big_r_names": "cmdr.25008158: $612→$32(-$580)",
+          "big_r_names": "无",
           "churn_names": "无"
         },
         "status": "正常"
       },
       {
-        "name": "潘多拉",
-        "cur": 375.22,
-        "prev": 705.27,
-        "delta": -0.468,
+        "name": "梵克雅宝",
+        "cur": 1475.72,
+        "prev": 5388.98,
+        "delta": -0.7262,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 270.07,
+          "big_r_stop": 0,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 0,
-          "big_r_names": "Goodamac: $486→$216(-$270)",
+          "big_r_names": "无",
           "churn_names": "无"
         },
         "status": "正常"
@@ -568,15 +648,47 @@ const WEEKLY_DATA = {
       {
         "name": "在水一方_JUR",
         "cur": 692.37,
-        "prev": 972.8,
-        "delta": -0.2883,
+        "prev": 1474.51,
+        "delta": -0.5304,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 432.17,
+          "big_r_stop": 0,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 0,
-          "big_r_names": "MoeLester: $655→$277(-$378), dutchie: $34→$10(-$24), FastFlipz: $49→$28(-$20)",
+          "big_r_names": "无",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "长沙哈迪斯_JUR",
+        "cur": 153.85,
+        "prev": 314.22,
+        "delta": -0.5104,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 0,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "无",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "潘多拉",
+        "cur": 375.22,
+        "prev": 739.1,
+        "delta": -0.4923,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 0,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "无",
           "churn_names": "无"
         },
         "status": "正常"
@@ -584,15 +696,47 @@ const WEEKLY_DATA = {
       {
         "name": "雅典娜",
         "cur": 319.1,
-        "prev": 437.59,
-        "delta": -0.2708,
+        "prev": 498.51,
+        "delta": -0.3599,
         "reason_detail": {
           "type": "mixed",
-          "big_r_stop": 102.98,
+          "big_r_stop": 0,
           "big_r_churn": 0,
           "reg_drop": 0,
           "quality_drop": 0,
-          "big_r_names": "cmdr.23005794: $200→$100(-$100), TOASTbread: $8→$5(-$3)",
+          "big_r_names": "无",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "西安玩趣发财_JUR",
+        "cur": 189.95,
+        "prev": 234.83,
+        "delta": -0.1911,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 0,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "无",
+          "churn_names": "无"
+        },
+        "status": "正常"
+      },
+      {
+        "name": "新郑乐牛发财_JUR",
+        "cur": 877.12,
+        "prev": 995.48,
+        "delta": -0.1189,
+        "reason_detail": {
+          "type": "mixed",
+          "big_r_stop": 0,
+          "big_r_churn": 0,
+          "reg_drop": 0,
+          "quality_drop": 0,
+          "big_r_names": "无",
           "churn_names": "无"
         },
         "status": "正常"
@@ -601,291 +745,186 @@ const WEEKLY_DATA = {
     "servers": [
       {
         "name": "S11",
-        "days": 186,
-        "total_regs": 1371,
+        "days": 2,
+        "total_regs": 1,
         "dau_cur": 57.3,
-        "dau_prev": 47.7,
+        "dau_prev": 57.3,
         "pay_cur": 1126.88,
-        "pay_prev": 1068.95,
+        "pay_prev": 1072.93,
         "payers_cur": 4.3,
-        "payers_prev": 2.7,
-        "life": "[衰老期]"
+        "payers_prev": 3.7,
+        "life": "[新开服]"
       },
       {
         "name": "S12",
-        "days": 166,
-        "total_regs": 1695,
+        "days": -2,
+        "total_regs": 1,
         "dau_cur": 0.0,
         "dau_prev": 0.0,
         "pay_cur": 824.95,
-        "pay_prev": 263.46,
+        "pay_prev": 273.45,
         "payers_cur": 0.0,
         "payers_prev": 0.0,
-        "life": "[衰老期]"
-      },
-      {
-        "name": "S13",
-        "days": 152,
-        "total_regs": 2197,
-        "dau_cur": 0.0,
-        "dau_prev": 0.0,
-        "pay_cur": 484.81,
-        "pay_prev": 461.94,
-        "payers_cur": 0.0,
-        "payers_prev": 0.0,
-        "life": "[衰老期]"
+        "life": "[新开服]"
       },
       {
         "name": "S14",
-        "days": 118,
-        "total_regs": 1914,
+        "days": -2,
+        "total_regs": 1,
         "dau_cur": 24.7,
-        "dau_prev": 21.7,
+        "dau_prev": 27.0,
         "pay_cur": 1427.15,
-        "pay_prev": 752.68,
+        "pay_prev": 1047.52,
         "payers_cur": 3.7,
-        "payers_prev": 2.3,
-        "life": "[衰老期]"
+        "payers_prev": 3.3,
+        "life": "[新开服]"
       },
       {
         "name": "S15",
-        "days": 90,
-        "total_regs": 2248,
+        "days": -3,
+        "total_regs": 1,
         "dau_cur": 31.0,
-        "dau_prev": 23.3,
+        "dau_prev": 27.7,
         "pay_cur": 343.92,
-        "pay_prev": 5.98,
+        "pay_prev": 317.13,
         "payers_cur": 2.0,
-        "payers_prev": 0.7,
-        "life": "[衰老期]"
+        "payers_prev": 1.0,
+        "life": "[新开服]"
       },
       {
         "name": "S16",
-        "days": 76,
-        "total_regs": 1358,
+        "days": 3,
+        "total_regs": 2,
         "dau_cur": 26.3,
-        "dau_prev": 20.7,
+        "dau_prev": 23.7,
         "pay_cur": 283.6,
-        "pay_prev": 190.74,
+        "pay_prev": 267.63,
         "payers_cur": 3.0,
-        "payers_prev": 1.7,
-        "life": "[衰老期]"
+        "payers_prev": 2.3,
+        "life": "[新开服]"
       },
       {
         "name": "S17",
-        "days": 69,
-        "total_regs": 1550,
+        "days": -1,
+        "total_regs": 3,
         "dau_cur": 36.3,
-        "dau_prev": 30.0,
+        "dau_prev": 34.3,
         "pay_cur": 351.38,
-        "pay_prev": 327.42,
+        "pay_prev": 380.4,
         "payers_cur": 2.7,
-        "payers_prev": 3.7,
-        "life": "[衰老期]"
+        "payers_prev": 4.0,
+        "life": "[新开服]"
       },
       {
         "name": "S18",
-        "days": 62,
-        "total_regs": 1689,
+        "days": 2,
+        "total_regs": 2,
         "dau_cur": 28.0,
-        "dau_prev": 22.0,
+        "dau_prev": 26.3,
         "pay_cur": 406.5,
-        "pay_prev": 135.21,
+        "pay_prev": 291.74,
         "payers_cur": 2.3,
-        "payers_prev": 2.3,
-        "life": "[衰老期]"
-      },
-      {
-        "name": "S19",
-        "days": 55,
-        "total_regs": 1085,
-        "dau_cur": 31.0,
-        "dau_prev": 26.7,
-        "pay_cur": 61.42,
-        "pay_prev": 109.97,
-        "payers_cur": 1.0,
-        "payers_prev": 4.0,
-        "life": "[稳定期]"
+        "payers_prev": 3.3,
+        "life": "[新开服]"
       },
       {
         "name": "S20",
-        "days": 48,
-        "total_regs": 1251,
+        "days": 3,
+        "total_regs": 2,
         "dau_cur": 46.0,
-        "dau_prev": 36.7,
+        "dau_prev": 42.7,
         "pay_cur": 408.89,
-        "pay_prev": 742.24,
+        "pay_prev": 1186.1,
         "payers_cur": 5.0,
-        "payers_prev": 1.7,
-        "life": "[稳定期]"
+        "payers_prev": 2.0,
+        "life": "[新开服]"
       },
       {
         "name": "S21",
-        "days": 41,
-        "total_regs": 1559,
+        "days": 3,
+        "total_regs": 2,
         "dau_cur": 46.7,
-        "dau_prev": 37.3,
+        "dau_prev": 43.7,
         "pay_cur": 603.47,
-        "pay_prev": 307.74,
+        "pay_prev": 450.22,
         "payers_cur": 6.7,
-        "payers_prev": 3.7,
-        "life": "[稳定期]"
+        "payers_prev": 4.0,
+        "life": "[新开服]"
       },
       {
         "name": "S22",
-        "days": 34,
-        "total_regs": 2016,
+        "days": -3,
+        "total_regs": 1,
         "dau_cur": 81.3,
-        "dau_prev": 65.7,
+        "dau_prev": 76.3,
         "pay_cur": 917.79,
-        "pay_prev": 175.57,
+        "pay_prev": 308.46,
         "payers_cur": 7.3,
-        "payers_prev": 5.0,
-        "life": "[稳定期]"
+        "payers_prev": 6.0,
+        "life": "[新开服]"
       },
       {
         "name": "S23",
-        "days": 27,
-        "total_regs": 2127,
+        "days": 2,
+        "total_regs": 4,
         "dau_cur": 140.7,
-        "dau_prev": 102.7,
+        "dau_prev": 119.0,
         "pay_cur": 1178.53,
-        "pay_prev": 3544.75,
+        "pay_prev": 3802.64,
         "payers_cur": 10.7,
-        "payers_prev": 7.3,
-        "life": "[成长期]"
+        "payers_prev": 9.3,
+        "life": "[新开服]"
       },
       {
         "name": "S24",
-        "days": 20,
-        "total_regs": 2208,
+        "days": 2,
+        "total_regs": 6,
         "dau_cur": 170.0,
-        "dau_prev": 129.3,
+        "dau_prev": 150.7,
         "pay_cur": 1459.11,
-        "pay_prev": 1018.53,
+        "pay_prev": 1161.94,
         "payers_cur": 15.3,
-        "payers_prev": 14.0,
-        "life": "[成长期]"
+        "payers_prev": 16.0,
+        "life": "[新开服]"
       },
       {
         "name": "S25",
-        "days": 13,
-        "total_regs": 2318,
+        "days": 3,
+        "total_regs": 8,
         "dau_cur": 292.7,
-        "dau_prev": 202.3,
+        "dau_prev": 225.3,
         "pay_cur": 2412.27,
-        "pay_prev": 3401.71,
+        "pay_prev": 3630.85,
         "payers_cur": 30.7,
-        "payers_prev": 19.3,
-        "life": "[成长期]"
+        "payers_prev": 22.7,
+        "life": "[新开服]"
       },
       {
         "name": "S26",
-        "days": 6,
-        "total_regs": 1760,
-        "dau_cur": 478.3,
-        "dau_prev": 499.7,
-        "pay_cur": 2207.33,
-        "pay_prev": 1307.24,
-        "payers_cur": 45.3,
-        "payers_prev": 38.7,
+        "days": 3,
+        "total_regs": 870,
+        "dau_cur": 482.7,
+        "dau_prev": 552.0,
+        "pay_cur": 2208.32,
+        "pay_prev": 1715.95,
+        "payers_cur": 45.7,
+        "payers_prev": 44.7,
         "life": "[新开服]"
       },
       {
         "name": "S27",
         "days": -1,
-        "total_regs": 457,
+        "total_regs": 958,
         "dau_cur": 0.0,
-        "dau_prev": 186.3,
+        "dau_prev": 273.0,
         "pay_cur": 0.0,
-        "pay_prev": 577.98,
+        "pay_prev": 807.6,
         "payers_cur": 0.0,
-        "payers_prev": 13.3,
+        "payers_prev": 21.7,
         "life": "[新开服]"
       }
     ],
-    "churn": [
-      {
-        "name": "DMOGKarmaX",
-        "ucid": "16020026003381",
-        "channel": "厄洛斯",
-        "server": "S26",
-        "total_pay": 735.77,
-        "last_login_days": 3
-      },
-      {
-        "name": "cmdr.25003234",
-        "ucid": "16020025003234",
-        "channel": "郑州未界发财_JUR",
-        "server": "S25",
-        "total_pay": 930.38,
-        "last_login_days": 5
-      },
-      {
-        "name": "南辞",
-        "ucid": "16020024009938",
-        "channel": "梵克雅宝",
-        "server": "S24",
-        "total_pay": 1077.95,
-        "last_login_days": 4
-      },
-      {
-        "name": "Prince",
-        "ucid": "16020022007549",
-        "channel": "发财团队_JUR",
-        "server": "S22",
-        "total_pay": 782.92,
-        "last_login_days": 4
-      },
-      {
-        "name": "ClIx",
-        "ucid": "16020017003303",
-        "channel": "郑州未界发财_JUR",
-        "server": "S17",
-        "total_pay": 4465.52,
-        "last_login_days": 6
-      },
-      {
-        "name": "hueS",
-        "ucid": "16020015009600",
-        "channel": "厄洛斯",
-        "server": "S15",
-        "total_pay": 2244.88,
-        "last_login_days": 6
-      },
-      {
-        "name": "cmdr.15006332",
-        "ucid": "16020015006332",
-        "channel": "发财团队_JUR",
-        "server": "S15",
-        "total_pay": 2105.74,
-        "last_login_days": 3
-      },
-      {
-        "name": "RedGen",
-        "ucid": "16020015005434",
-        "channel": "郑州未界发财_JUR",
-        "server": "S15",
-        "total_pay": 885.85,
-        "last_login_days": 6
-      },
-      {
-        "name": "JunNyx",
-        "ucid": "16020015004499",
-        "channel": "厄洛斯",
-        "server": "S15",
-        "total_pay": 8564.41,
-        "last_login_days": 4
-      },
-      {
-        "name": "Doggy",
-        "ucid": "16020015004467",
-        "channel": "聚冠_JUR",
-        "server": "S15",
-        "total_pay": 761.78,
-        "last_login_days": 6
-      }
-    ]
+    "churn": []
   }
 };
 const HISTORY_DATA = {
