@@ -222,7 +222,7 @@ const WEEKLY_DATA = {
           "reg_drop": 0,
           "quality_drop": 0,
           "big_r_names": "无",
-          "churn_names": "无"
+          "churn_names": "Habaek"
         },
         "status": "正常"
       },
@@ -281,6 +281,15 @@ const WEEKLY_DATA = {
         "life": "[新开服]"
       }
     ],
-    "churn": []
+    "churn": [
+      {
+        "name": "Habaek",
+        "ucid": "16020027007052",
+        "channel": "厄洛斯",
+        "server": "S27",
+        "total_pay": 618.74,
+        "last_login_days": 3
+      }
+    ]
   }
 };
