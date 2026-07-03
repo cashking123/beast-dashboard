@@ -118,7 +118,7 @@ const HISTORY_DATA = {
         "total_rev": 24873.92,
         "total_payers": 371,
         "rev7": 213.59,
-        "active7": 87,
+        "active7": 86,
         "payers7": 17
       },
       {
@@ -168,7 +168,7 @@ const HISTORY_DATA = {
         "total_rev": 12632.33,
         "total_payers": 237,
         "rev7": 1200.04,
-        "active7": 661,
+        "active7": 659,
         "payers7": 117
       },
       {
@@ -240,7 +240,7 @@ const HISTORY_DATA = {
         "total_rev": 48129.78,
         "ltv": 26.16,
         "status": "活跃",
-        "remain": 361,
+        "remain": 360,
         "remain_pay": 100
       },
       {
@@ -290,7 +290,7 @@ const HISTORY_DATA = {
         "total_rev": 7095.06,
         "ltv": 6.79,
         "status": "活跃",
-        "remain": 165,
+        "remain": 163,
         "remain_pay": 31
       },
       {
